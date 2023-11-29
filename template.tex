@@ -1,4 +1,4 @@
-     %% bare_jrnl.tex
+%% bare_jrnl.tex
 %% V1.4b
 %% 2015/08/26
 %% by Michael Shell
@@ -113,22 +113,22 @@
 % *** GRAPHICS RELATED PACKAGES ***
 %
 \ifCLASSINFOpdf
-   \usepackage[pdftex]{graphicx}
-  % declare the path(s) where your graphic files are
-  % \graphicspath{{../pdf/}{../jpeg/}}
-  % and their extensions so you won't have to specify these with
-  % every instance of \includegraphics
-   \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+	\usepackage[pdftex]{graphicx}
+	% declare the path(s) where your graphic files are
+	% \graphicspath{{../pdf/}{../jpeg/}}
+	% and their extensions so you won't have to specify these with
+	% every instance of \includegraphics
+	\DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg}
 \else
-  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
-  % will default to the driver specified in the system graphics.cfg if no
-  % driver is specified.
-  % \usepackage[dvips]{graphicx}
-  % declare the path(s) where your graphic files are
-  % \graphicspath{{../eps/}}
-  % and their extensions so you won't have to specify these with
-  % every instance of \includegraphics
-  % \DeclareGraphicsExtensions{.eps}
+	% or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+	% will default to the driver specified in the system graphics.cfg if no
+	% driver is specified.
+	% \usepackage[dvips]{graphicx}
+	% declare the path(s) where your graphic files are
+	% \graphicspath{{../eps/}}
+	% and their extensions so you won't have to specify these with
+	% every instance of \includegraphics
+	% \DeclareGraphicsExtensions{.eps}
 \fi
 % graphicx was written by David Carlisle and Sebastian Rahtz. It is
 % required if you want graphics, photos, etc. graphicx.sty is already
@@ -215,9 +215,9 @@
 
 % *** SUBFIGURE PACKAGES ***
 \ifCLASSOPTIONcompsoc
-  \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+	\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
 \else
-  \usepackage[caption=false,font=footnotesize]{subfig}
+	\usepackage[caption=false,font=footnotesize]{subfig}
 \fi
 % subfig.sty, written by Steven Douglas Cochran, is the modern replacement
 % for subfigure.sty, the latter of which is no longer maintained and is
@@ -434,12 +434,12 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract or keywords.
 \begin{abstract}
-The abstract goes here.
+	The abstract goes here.
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.
 \begin{IEEEkeywords}
-Wave Simulation, Source Terms, Seminar, PDE, ODE, Factional Methods.
+	Wave Simulation, Source Terms, Seminar, PDE, ODE, Fractional Methods.
 \end{IEEEkeywords}
 
 
@@ -457,7 +457,9 @@ Wave Simulation, Source Terms, Seminar, PDE, ODE, Factional Methods.
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
 
+\section {Introduction}
 
+\IEEEPARstart{M}{ost} of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code is my own and can be found in \cite{github}. I try to use Julia as an exercise. I also took inspiration from \cite {clawpack} and \cite {riemann}.
 
 \section{From Conservation Laws to Balance Laws}
 % The very first letter is a 2 line initial drop letter followed
@@ -466,34 +468,19 @@ Wave Simulation, Source Terms, Seminar, PDE, ODE, Factional Methods.
 % form to use if the first word consists of a single letter:
 % \IEEEPARstart{A}{demo} file is ....
 % 
-% form to use if you need the single drop letter followed by
-% normal text (unknown if ever used by the IEEE):
-% \IEEEPARstart{A}{}demo file is ....
-% 
 % Some journals put the first two words in caps:
 % \IEEEPARstart{T}{his demo} file is ....
 % 
 % Here we have the typical use of a "T" for an initial drop letter
 % and "HIS" in caps to complete the first word.
-\IEEEPARstart{T}{his} demo file is intended to serve as a ``starter file''
-for IEEE journal papers produced under \LaTeX\ using
-IEEEtran.cls version 1.8b and later.
-% You must have at least 2 lines in the paragraph with the drop letter
-% (should never be an issue)
-I wish you the best of success.
+\IEEEPARstart{I}{n} this paper, we examine some numerical methods for the solution of \textit{non homogeneous balance laws}. These are an extension of the well-known \textit{conservation laws} of the form $q_t+f(q)_x=0$ by adding a \textit{source term}, that is called
 
-\hfill mds
- 
-\hfill August 26, 2015
 
-\subsection{Subsection Heading Here}
-Subsection text here.
 
 % needed in second column of first page if using \IEEEpubid
 %\IEEEpubidadjcol
 
-\subsubsection{Subsubsection Heading Here}
-Subsubsection text here.\cite{leveque}
+
 
 
 % An example of a floating figure using the graphicx package.
@@ -509,15 +496,15 @@ Subsubsection text here.\cite{leveque}
 % option should be used if it is desired that the figures are to be
 % displayed while in draft mode.
 %
-%\begin{figure}[!t]
-%\centering
-%\includegraphics[width=2.5in]{myfigure}
-% where an .eps filename suffix will be assumed under latex, 
-% and a .pdf suffix will be assumed for pdflatex; or what has been declared
-% via \DeclareGraphicsExtensions.
-%\caption{Simulation results for the network.}
-%\label{fig_sim}
-%\end{figure}
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=2.5in]{bears}
+	% where an .eps filename suffix will be assumed under latex, 
+	% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+	% via \DeclareGraphicsExtensions.
+	\caption{Simulation results for the network.}
+	\label{fig_sim}
+\end{figure}
 
 % Note that the IEEE typically puts floats only at the top, even when this
 % results in a large percentage of a column being occupied by floats.
@@ -531,16 +518,16 @@ Subsubsection text here.\cite{leveque}
 % Watch out that the combined width of all the subfigures on a 
 % line do not exceed the text width or a line break will occur.
 %
-%\begin{figure*}[!t]
-%\centering
-%\subfloat[Case I]{\includegraphics[width=2.5in]{box}%
-%\label{fig_first_case}}
-%\hfil
-%\subfloat[Case II]{\includegraphics[width=2.5in]{box}%
-%\label{fig_second_case}}
-%\caption{Simulation results for the network.}
-%\label{fig_sim}
-%\end{figure*}
+\begin{figure*}[!h]
+	\centering
+	\subfloat[Case I]{\includegraphics[width=2.5in]{bears}%
+		\label{fig_first_case}}
+	\hfil
+	\subfloat[Case II]{\includegraphics[width=2.5in]{tree}%
+		\label{fig_second_case}}
+	\caption{Simulation results for the network.}
+	\label{fig_sim}
+\end{figure*}
 %
 % Note that often IEEE papers with subfigures do not employ subfigure
 % captions (using the optional argument to \subfloat[]), but instead will
@@ -630,7 +617,7 @@ The conclusion goes here.
 % Can use something like this to put references on a page
 % by themselves when using endfloat and the captionsoff option.
 \ifCLASSOPTIONcaptionsoff
-  \newpage
+	\newpage
 \fi
 
 
@@ -650,7 +637,8 @@ The conclusion goes here.
 % http://mirror.ctan.org/biblio/bibtex/contrib/doc/
 % The IEEEtran BibTeX style support page is at:
 % http://www.michaelshell.org/tex/ieeetran/bibtex/
-%\bibliographystyle{IEEEtran}
+%\bibliographystyle{IEEEtran}url
+
 % argument is your BibTeX string definitions and bibliography database(s)
 %\bibliography{IEEEabrv,../bib/paper}
 %
@@ -659,11 +647,19 @@ The conclusion goes here.
 % (used to reserve space for the reference number labels box)
 \begin{thebibliography}{1}
 
- 
-\bibitem{leveque} 
-R.~J.~LeVeque, \emph{Finite Volume Methods for Hyperbolic Problems}.\hskip 1em plus
-  0.5em minus 0.4em\relax Cambridge: Cambridge University Press, 2002.
 
+	\bibitem{leveque}
+	R.~J.~LeVeque, \emph{Finite Volume Methods for Hyperbolic Problems}.\hskip 1em plus
+	0.5em minus 0.4em\relax Cambridge: Cambridge University Press, 2002.
+
+	\bibitem{github}
+	\url{https://github.com/matilde-t/SeminarCourse-FundamentalsOfWaveSimulation}
+
+	\bibitem{clawpack}
+	\url{https://github.com/clawpack/apps/tree/master/fvmbook/chap17}
+
+	\bibitem{riemann}
+	\url{https://github.com/clawpack/riemann_book}
 
 \end{thebibliography}
 
