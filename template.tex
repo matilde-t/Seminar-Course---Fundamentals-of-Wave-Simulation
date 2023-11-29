@@ -457,11 +457,6 @@
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
 
-\section {Introduction}
-
-\IEEEPARstart{M}{ost} of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code is my own and can be found in \cite{github}. I try to use Julia as an exercise. I also took inspiration from \cite {clawpack} and \cite {riemann}.
-
-\section{From Conservation Laws to Balance Laws}
 % The very first letter is a 2 line initial drop letter followed
 % by the rest of the first word in caps.
 % 
@@ -473,7 +468,31 @@
 % 
 % Here we have the typical use of a "T" for an initial drop letter
 % and "HIS" in caps to complete the first word.
-\IEEEPARstart{I}{n} this paper, we examine some numerical methods for the solution of \textit{non homogeneous balance laws}. These are an extension of the well-known \textit{conservation laws} of the form $q_t+f(q)_x=0$ by adding a \textit{source term}, that is called
+\section {Introduction}
+
+\IEEEPARstart{M}{ost} of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code is my own and can be found in \cite{github}. I try to use Julia as an exercise. I also took inspiration from \cite {clawpack} and \cite {riemann}.
+
+\section{From Conservation Laws to Balance Laws}
+\IEEEPARstart{I}{n} this paper, we examine some numerical methods for the solution of \textit{non homogeneous balance laws}. These are an extension of the well-known \textit{conservation laws} of the form $q_t+f(q)_x=0$ by adding a \textit{source term} $\psi(q)$. This is called source term even if physically it represents a sink rather than a source, i.e. a loss of $q$. Our reference equation is therefore
+
+\begin{equation} \label{eq:template}
+	q_t + f(q)_x = \psi(q).
+\end{equation}
+
+We will mostly study problems where the homogeneous equation
+
+\begin{equation} \label{eq:hom}
+	q_t +f(q)_x = 0
+\end{equation}
+
+is \textit{hyperbolic} and the source terms don't depend on derivatives of $q$, so that
+
+\begin{equation} \label{eq:source}
+	q_t = \psi(q)
+\end{equation}
+
+is an independent system of ODEs.
+
 
 
 
@@ -496,7 +515,7 @@
 % option should be used if it is desired that the figures are to be
 % displayed while in draft mode.
 %
-\begin{figure}[!h]
+\begin{figure}[!ht]
 	\centering
 	\includegraphics[width=2.5in]{bears}
 	% where an .eps filename suffix will be assumed under latex, 
@@ -518,7 +537,7 @@
 % Watch out that the combined width of all the subfigures on a 
 % line do not exceed the text width or a line break will occur.
 %
-\begin{figure*}[!h]
+\begin{figure*}[!ht]
 	\centering
 	\subfloat[Case I]{\includegraphics[width=2.5in]{bears}%
 		\label{fig_first_case}}
@@ -526,7 +545,7 @@
 	\subfloat[Case II]{\includegraphics[width=2.5in]{tree}%
 		\label{fig_second_case}}
 	\caption{Simulation results for the network.}
-	\label{fig_sim}
+	\label{fig_sim2}
 \end{figure*}
 %
 % Note that often IEEE papers with subfigures do not employ subfigure
@@ -581,7 +600,54 @@
 
 
 \section{Godunov-Strang splitting}
-The conclusion goes here.
+
+One standard approach to these problems is using a \textit{fractional-step} or \textit{operator-splitting} method, where we alternate between solving the homogeneous \eqref{eq:hom} and source \eqref{eq:source} term. This allows us to easily use a lot of standard numerical methods for PDEs and ODEs.
+
+\subsection{The Advection-Reaction Equation}
+
+The standard example that will be used to illustrate all the following numerical methods is the \textit{advection-reaction} equation, which can be seen as the model for the transport along a flow of a radioactive substance which decays at rate $\beta$ while it's transported at constant speed $\bar{u}$, with initial data $q(x,0)= \mathring{q}(x)$.
+
+\begin{equation}\label{eq:advec}
+	q_t = \bar{u}q_x=-\beta q
+\end{equation}
+
+We can compute the exact solution of \eqref{eq:advec}, because along the characteristic $\frac{dx}{dt}=\bar{u}$ we have $\frac{dq}{dt}=-\beta q$ and it follows that
+
+\begin{equation}\label{eq:advec_sol}
+	q(x,t) = e^{-\beta t}\mathring{q}(x-\bar{u}t).
+\end{equation}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 \section{Implicit methods and choice of ODE solver}
