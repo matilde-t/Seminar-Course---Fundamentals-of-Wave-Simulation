@@ -1,0 +1,5 @@
+*.log
+*.bak*
+bears.jpg
+tree.jpg
+.template.tex.swp
