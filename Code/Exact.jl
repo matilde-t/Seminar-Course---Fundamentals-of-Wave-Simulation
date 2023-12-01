@@ -1,12 +1,13 @@
 using Plots
 
-
-beta(x) = 1 .- x
-q0(x) = exp.(-0.5 * (x .- 0.25) .^ 2 / (2 * 0.003)) ./ sqrt(2 * pi * 0.003)
 u = 1
+beta(x) = 1 
+
+mu = 0.25
+sigma2 = 0.003
+q0(x) = exp.(-(x.-mu).^2/(2*sigma2))/sqrt(2*pi*sigma2)
 
 q(x, t) = exp.(-beta(x) .* t) .* q0(x .- u * t)
-
 
 x = range(0, 1, 100)
 
