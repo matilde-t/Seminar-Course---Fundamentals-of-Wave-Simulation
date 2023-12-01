@@ -115,7 +115,7 @@
 \ifCLASSINFOpdf
 	\usepackage[pdftex]{graphicx}
 	% declare the path(s) where your graphic files are
-	% \graphicspath{{../pdf/}{../jpeg/}}
+	% \graphicspath{{./Code/}{.}}
 	% and their extensions so you won't have to specify these with
 	% every instance of \includegraphics
 	\DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg}
@@ -515,15 +515,15 @@ is an independent system of ODEs.
 % option should be used if it is desired that the figures are to be
 % displayed while in draft mode.
 %
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=2.5in]{bears}
-	% where an .eps filename suffix will be assumed under latex, 
-	% and a .pdf suffix will be assumed for pdflatex; or what has been declared
-	% via \DeclareGraphicsExtensions.
-	\caption{Simulation results for the network.}
-	\label{fig_sim}
-\end{figure}
+% \begin{figure}[!ht]
+% 	\centering
+% 	\includegraphics[width=2.5in]{bears}
+% 	% where an .eps filename suffix will be assumed under latex, 
+% 	% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% 	% via \DeclareGraphicsExtensions.
+% 	\caption{Simulation results for the network.}
+% 	\label{fig_sim}
+% \end{figure}
 
 % Note that the IEEE typically puts floats only at the top, even when this
 % results in a large percentage of a column being occupied by floats.
@@ -537,16 +537,16 @@ is an independent system of ODEs.
 % Watch out that the combined width of all the subfigures on a 
 % line do not exceed the text width or a line break will occur.
 %
-\begin{figure*}[!ht]
-	\centering
-	\subfloat[Case I]{\includegraphics[width=2.5in]{bears}%
-		\label{fig_first_case}}
-	\hfil
-	\subfloat[Case II]{\includegraphics[width=2.5in]{tree}%
-		\label{fig_second_case}}
-	\caption{Simulation results for the network.}
-	\label{fig_sim2}
-\end{figure*}
+% \begin{figure*}[!ht]
+% 	\centering
+% 	\subfloat[Case I]{\includegraphics[width=2.5in]{bears}%
+% 		\label{fig_first_case}}
+% 	\hfil
+% 	\subfloat[Case II]{\includegraphics[width=2.5in]{tree}%
+% 		\label{fig_second_case}}
+% 	\caption{Simulation results for the network.}
+% 	\label{fig_sim2}
+% \end{figure*}
 %
 % Note that often IEEE papers with subfigures do not employ subfigure
 % captions (using the optional argument to \subfloat[]), but instead will
@@ -601,7 +601,7 @@ is an independent system of ODEs.
 
 \section{Godunov-Strang splitting}
 
-One standard approach to these problems is using a \textit{fractional-step} or \textit{operator-splitting} method, where we alternate between solving the homogeneous \eqref{eq:hom} and source \eqref{eq:source} term. This allows us to easily use a lot of standard numerical methods for PDEs and ODEs.
+\IEEEPARstart{O}{ne} standard approach to these problems is using a \textit{fractional-step} or \textit{operator-splitting} method, where we alternate between solving the homogeneous \eqref{eq:hom} and source \eqref{eq:source} term. This allows us to easily use a lot of standard numerical methods for PDEs and ODEs.
 
 \subsection{The Advection-Reaction Equation}
 
@@ -616,6 +616,16 @@ We can compute the exact solution of \eqref{eq:advec}, because along the charact
 \begin{equation}\label{eq:advec_sol}
 	q(x,t) = e^{-\beta t}\mathring{q}(x-\bar{u}t).
 \end{equation}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=2.5in]{Advection.png}
+	% where an .eps filename suffix will be assumed under latex, 
+	% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+	% via \DeclareGraphicsExtensions.
+	\caption{Evolution of the exact solution with $\bar{u}=1$, $\beta=1-x$, and $\mathring{q}=\text{Gaussian}(0.25,0.03)$. We see that the maximum point decreases in time as the decay factor becomes stronger.}
+	\label{fig:exact}
+\end{figure}
 
 \subsection{The Unsplit Method}
 
@@ -656,7 +666,7 @@ The idea is to apply the two methods in an alternating manner, using standard so
 	\text{B-step: } Q_i^{n+1} = Q_i^*-\beta\Delta tQ_i^*.
 \end{equation}
 
-One may think that given that both $Q_i^*$ and $Q_i^{n+1}$ are calculated using $\Delta t$, the solution is valid for time $2\Delta t$, but it is not really the case: in fact if we combine the two stages and eliminate $Q_i^*$, as detailed in \cite{leveque}, we obtain 
+One may think that given that both $Q_i^*$ and $Q_i^{n+1}$ are calculated using $\Delta t$, the solution is valid for time $2\Delta t$, but it is not really the case: in fact if we combine the two stages and eliminate $Q_i^*$, as detailed in \cite{leveque}, we obtain
 
 \begin{equation}
 	Q_i^{n+1} = Q_i^n -\frac{\bar{u}\Delta t}{\Delta x}(Q_i^n-Q_{i-1}^n)-\beta\Delta tQ_i^n +\frac{\bar{u}\beta\Delta t^2}{\Delta x}(Q_i^n-Q_{i-1}^n).
