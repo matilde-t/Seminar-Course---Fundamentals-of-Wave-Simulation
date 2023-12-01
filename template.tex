@@ -608,7 +608,7 @@ One standard approach to these problems is using a \textit{fractional-step} or \
 The standard example that will be used to illustrate all the following numerical methods is the \textit{advection-reaction} equation, which can be seen as the model for the transport along a flow of a radioactive substance which decays at rate $\beta$ while it's transported at constant speed $\bar{u}$, with initial data $q(x,0)= \mathring{q}(x)$.
 
 \begin{equation}\label{eq:advec}
-	q_t = \bar{u}q_x=-\beta q
+	q_t + \bar{u}q_x=-\beta q
 \end{equation}
 
 We can compute the exact solution of \eqref{eq:advec}, because along the characteristic $\frac{dx}{dt}=\bar{u}$ we have $\frac{dq}{dt}=-\beta q$ and it follows that
@@ -617,14 +617,52 @@ We can compute the exact solution of \eqref{eq:advec}, because along the charact
 	q(x,t) = e^{-\beta t}\mathring{q}(x-\bar{u}t).
 \end{equation}
 
+\subsection{The Unsplit Method}
 
+Of course for this specific example we can easily compute an \textit{unsplit} method
 
+\begin{equation}\label{eq:unsplit}
+	\frac{Q^{n+1}_i-Q^n_i}{\Delta t} = -\bar{u} \frac{Q^n_i-Q^n_{i-1}}{\Delta x}-\beta Q^n_i \Rightarrow Q^{n+1}_i = Q^n_i-\bar{u} \frac{\Delta t}{\Delta x}(Q^n_i-Q^n_{i-1})-\Delta t\beta Q^n_i
+\end{equation}
 
+which is first-order accurate and stable for $0<\bar{u}\frac{\Delta T}{\Delta x}\leq1$.
+A second-order method is also easily obtainable with the Taylor expansion of $q(x,t+\Delta t)$ as explained in \cite{leveque}. An important thing to note is that the full Taylor expansion of \eqref{eq:advec} can be written formally as
 
+\begin{equation}
+	e^{-\Delta t(\bar{u}\partial_x+\beta)}q(x,t):=q(x,t+\Delta t)=\sum_{j=0}^{\infty}\frac{(\Delta t)^j}{j!}\partial_t^jq(x,t)=\sum_{j=0}^{\infty}\frac{(\Delta t)^j}{j!}(-\bar{u}\partial_x-\beta)^jq(x,t).
+\end{equation}
 
+The operator $e^{-\Delta t(\bar{u}\partial_x+\beta)}$ is called \textit{solution operator} for the equation \eqref{eq:advec} over a time step of length $\Delta t$.
 
+\subsection{The Fractional-Step Method}
 
+In the case of the advection equation, we can split it into two subproblems:
 
+\begin{equation}\label{eq:probA}
+	\text{Problem A: } q_t+\bar{u}q_x=0,
+\end{equation}
+
+\begin{equation}\label{eq:probB}
+	\text{Problem B: } q_t = -\beta q.
+\end{equation}
+
+The idea is to apply the two methods in an alternating manner, using standard solving stategies, e.g.:
+
+\begin{equation}\label{eq:stepA}
+	\text{A-step: } Q_i^* = Q_i^n - \frac{\bar{u}\Delta t}{\Delta x} (Q_i^n-Q_{i_1}^n),
+\end{equation}
+
+\begin{equation}\label{eq:stepB}
+	\text{B-step: } Q_i^{n+1} = Q_i^*-\beta\Delta tQ_i^*.
+\end{equation}
+
+One may think that given that both $Q_i^*$ and $Q_i^{n+1}$ are calculated using $\Delta t$, the solution is valid for time $2\Delta t$, but it is not really the case: in fact if we combine the two stages and eliminate $Q_i^*$, as detailed in \cite{leveque}, we obtain 
+
+\begin{equation}
+	Q_i^{n+1} = Q_i^n -\frac{\bar{u}\Delta t}{\Delta x}(Q_i^n-Q_{i-1}^n)-\beta\Delta tQ_i^n +\frac{\bar{u}\beta\Delta t^2}{\Delta x}(Q_i^n-Q_{i-1}^n).
+\end{equation}
+
+The first three terms on the right hand side agree with \eqref{eq:unsplit} and the last one is $\mathcal{O}(\Delta t)$, so this method is also consistent and first-order accurate.
 
 
 
