@@ -1,11 +1,11 @@
 using Plots
 
 u = 1
-beta(x) = 1 
+beta(x) = 1
 
 mu = 0.25
 sigma2 = 0.003
-q0(x) = exp.(-(x.-mu).^2/(2*sigma2))/sqrt(2*pi*sigma2)
+q0(x) = exp.(-(x .- mu) .^ 2 / (2 * sigma2)) / sqrt(2 * pi * sigma2)
 
 q(x, t) = exp.(-beta(x) .* t) .* q0(x .- u * t)
 

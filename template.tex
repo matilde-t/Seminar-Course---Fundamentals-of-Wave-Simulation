@@ -635,7 +635,7 @@ Of course for this specific example we can easily compute an \textit{unsplit} me
 	\frac{Q^{n+1}_i-Q^n_i}{\Delta t} = -\bar{u} \frac{Q^n_i-Q^n_{i-1}}{\Delta x}-\beta Q^n_i \Rightarrow Q^{n+1}_i = Q^n_i-\bar{u} \frac{\Delta t}{\Delta x}(Q^n_i-Q^n_{i-1})-\Delta t\beta Q^n_i
 \end{equation}
 
-which is first-order accurate and stable for $0<\bar{u}\frac{\Delta T}{\Delta x}\leq1$.
+which is first-order accurate and stable for $0<\bar{u}\frac{\Delta t}{\Delta x}\leq1$.
 A second-order method is also easily obtainable with the Taylor expansion of $q(x,t+\Delta t)$ as explained in \cite{leveque}. An important thing to note is that the full Taylor expansion of \eqref{eq:advec} can be written formally as
 
 \begin{equation}
@@ -659,7 +659,7 @@ In the case of the advection equation, we can split it into two subproblems:
 The idea is to apply the two methods in an alternating manner, using standard solving stategies, e.g.:
 
 \begin{equation}\label{eq:stepA}
-	\text{A-step: } Q_i^* = Q_i^n - \frac{\bar{u}\Delta t}{\Delta x} (Q_i^n-Q_{i_1}^n),
+	\text{A-step: } Q_i^* = Q_i^n - \frac{\bar{u}\Delta t}{\Delta x} (Q_i^n-Q_{i-1}^n),
 \end{equation}
 
 \begin{equation}\label{eq:stepB}
@@ -672,9 +672,18 @@ One may think that given that both $Q_i^*$ and $Q_i^{n+1}$ are calculated using 
 	Q_i^{n+1} = Q_i^n -\frac{\bar{u}\Delta t}{\Delta x}(Q_i^n-Q_{i-1}^n)-\beta\Delta tQ_i^n +\frac{\bar{u}\beta\Delta t^2}{\Delta x}(Q_i^n-Q_{i-1}^n).
 \end{equation}
 
-The first three terms on the right hand side agree with \eqref{eq:unsplit} and the last one is $\mathcal{O}(\Delta t)$, so this method is also consistent and first-order accurate.
+The first three terms on the right hand side agree with \eqref{eq:unsplit} and the last one is $\mathcal{O}(\Delta t)$, so this method is also consistent and first-order accurate. A question that may arise is: does the accuracy improve if we use a second-order method for both \eqref{eq:probA} and \eqref{eq:probB}? In this specific case, yes, but it is not true in general because the splitting introduces a $\mathcal{O}(\Delta t)$ error. The reason why we don't have an error in this case is that we can really decouple the advection and the decay and do these updates in either order. This doesn't happen anymore if for example we take $\beta = 1-x$, because in this case the value depends on the position and applying the B-step before or after the A-step changes the result.
 
-
+\begin{figure*}[!ht]
+	\centering
+	\subfloat[]{\includegraphics[width=0.4\textwidth]{Commute.png}%
+		\label{fig:commute}}
+	\hfil
+	\subfloat[]{\includegraphics[width=0.4\textwidth]{NoCommute.png}%
+		\label{fig:commute1}}
+	\caption{Comparison between the exact solution, the unsplit method and the split method with the two different orders of steps. AB is hidden by Unsplit because they are very close.}
+	\label{fi:AB}
+\end{figure*}
 
 
 
