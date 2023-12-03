@@ -64,10 +64,11 @@ plot!(legend=:outerbottom, legendcolumns=3)
 png("Commute")
 
 error = @. (QAB - QBA) / QAB
-scatter(x_, error, legend=false)
-title!("Relative Error β = 1")
+ab_error = @. QAB - QBA
+scatter(x_, [error ab_error], label=["Relative" "Absolute"])
+title!("Error β = 1")
 xlabel!("x")
-ylabel!("(Q_AB - Q_BA)/Q_AB")
+ylabel!("Error")
 xlims!(0.7, Inf)
-ylims!(-0.02, 0.02)
+ylims!(-0.01, 0.08)
 png("CommuteErr")
