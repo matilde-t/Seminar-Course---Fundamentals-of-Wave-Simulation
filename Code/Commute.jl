@@ -7,7 +7,7 @@ sigma2 = 0.003
 
 q0(x) = @. exp(-(x - mu)^2 / (2 * sigma2)) / sqrt(2 * π * sigma2)
 
-beta(x) = @. 1 - 0*x
+beta(x) = @. 1 - 0 * x
 
 q(x, t) = @. exp(-beta(x) * t) * q0(x - u * t)
 
@@ -36,6 +36,8 @@ end
 plot(x, q.(x, t_end), label="Exact")
 scatter!(x_, Qr, label="AB")
 
+QAB = copy(Qr)
+
 Q0 .= q0.(x_)
 Q .= copy(Q0)
 Qstar .= copy(Q0)
@@ -51,8 +53,19 @@ end
 
 scatter!(x_, Qr, label="BA")
 
+QBA = copy(Qr)
+
 xlims!(0.7, Inf)
 ylims!(0, 7)
 title!("β = 1")
 plot!(legend=:outerbottom, legendcolumns=3)
 png("Commute")
+
+error = @. (QAB - QBA) / QAB
+scatter(x_, error, legend=false)
+title!("Relative Error β = 1")
+xlabel!("x")
+ylabel!("(Q_AB - Q_BA)/Q_AB")
+xlims!(0.7, Inf)
+ylims!(-0.05, 0.05)
+png("CommuteErr")

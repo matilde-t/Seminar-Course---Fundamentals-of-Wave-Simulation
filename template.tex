@@ -676,12 +676,16 @@ The first three terms on the right hand side agree with \eqref{eq:unsplit} and t
 
 \begin{figure*}[!ht]
 	\centering
-	\subfloat[]{\includegraphics[width=0.4\textwidth]{Commute.png}%
+	\subfloat[]{\includegraphics[width=0.5\textwidth]{Commute.png}%
 		\label{fig:commute}}
-	\hfil
-	\subfloat[]{\includegraphics[width=0.4\textwidth]{NoCommute.png}%
-		\label{fig:commute1}}
-	\caption{Comparison between the exact solution, the unsplit method and the split method with the two different orders of steps. AB is hidden by Unsplit because they are very close.}
+	\subfloat[]{\includegraphics[width=0.5\textwidth]{NoCommute.png}%
+		\label{fig:nocommute}}
+
+	\subfloat[]{\includegraphics[width=0.5\textwidth]{CommuteErr.png}%
+		\label{fig:commuteErr}}
+	\subfloat[]{\includegraphics[width=0.5\textwidth]{NoCommuteErr.png}%
+		\label{fig:nocommuteErr}}
+	\caption{Comparison between the exact solution and the split method with the two different orders of steps. The difference is hardly noticeable in the plot, but the relative error is non-zero.}
 	\label{fi:AB}
 \end{figure*}
 
