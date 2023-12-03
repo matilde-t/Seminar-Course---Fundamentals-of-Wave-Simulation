@@ -16,7 +16,7 @@ Q0 = q0(x_)
 b = similar(Q0)
 fill!(b, 1)
 t_end = 0.3
-dt = 0.0005
+dt = dx / 10
 
 Q = similar(Q0)
 Qstar = similar(Q0)

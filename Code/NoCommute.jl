@@ -15,7 +15,7 @@ x_ = 0:dx:1
 Q0 = q0(x_)
 b = beta(x_)
 t_end = 0.3
-dt = 0.0005
+dt = dx / 10
 
 Q = similar(Q0)
 Qstar = similar(Q0)

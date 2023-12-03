@@ -473,7 +473,7 @@
 \IEEEPARstart{M}{ost} of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code is my own and can be found in \cite{github}. I try to use Julia as an exercise. I also took inspiration from \cite {clawpack} and \cite {riemann}.
 
 \section{From Conservation Laws to Balance Laws}
-\IEEEPARstart{I}{n} this paper, we examine some numerical methods for the solution of \textit{non homogeneous balance laws}. These are an extension of the well-known \textit{conservation laws} of the form $q_t+f(q)_x=0$ by adding a \textit{source term} $\psi(q)$. This is called source term even if physically it represents a sink rather than a source, i.e. a loss of $q$. Our reference equation is therefore
+In this paper, we examine some numerical methods for the solution of \textit{non homogeneous balance laws}. These are an extension of the well-known \textit{conservation laws} of the form $q_t+f(q)_x=0$ by adding a \textit{source term} $\psi(q)$. This is called source term even if physically it represents a sink rather than a source, i.e. a loss of $q$. Our reference equation is therefore
 
 \begin{equation} \label{eq:template}
 	q_t + f(q)_x = \psi(q).
@@ -601,7 +601,7 @@ is an independent system of ODEs.
 
 \section{Godunov-Strang splitting}
 
-\IEEEPARstart{O}{ne} standard approach to these problems is using a \textit{fractional-step} or \textit{operator-splitting} method, where we alternate between solving the homogeneous \eqref{eq:hom} and source \eqref{eq:source} term. This allows us to easily use a lot of standard numerical methods for PDEs and ODEs.
+One standard approach to these problems is using a \textit{fractional-step} or \textit{operator-splitting} method, where we alternate between solving the homogeneous \eqref{eq:hom} and source \eqref{eq:source} term. This allows us to easily use a lot of standard numerical methods for PDEs and ODEs.
 
 \subsection{The Advection-Reaction Equation}
 
@@ -644,7 +644,7 @@ A second-order method is also easily obtainable with the Taylor expansion of $q(
 
 The operator $e^{-\Delta t(\bar{u}\partial_x+\beta)}$ is called \textit{solution operator} for the equation \eqref{eq:advec} over a time step of length $\Delta t$.
 
-\subsection{The Fractional-Step Method}
+\subsection{Godunov Splitting}
 
 In the case of the advection equation, we can split it into two subproblems:
 
@@ -672,7 +672,7 @@ One may think that given that both $Q_i^*$ and $Q_i^{n+1}$ are calculated using 
 	Q_i^{n+1} = Q_i^n -\frac{\bar{u}\Delta t}{\Delta x}(Q_i^n-Q_{i-1}^n)-\beta\Delta tQ_i^n +\frac{\bar{u}\beta\Delta t^2}{\Delta x}(Q_i^n-Q_{i-1}^n).
 \end{equation}
 
-The first three terms on the right hand side agree with \eqref{eq:unsplit} and the last one is $\mathcal{O}(\Delta t)$, so this method is also consistent and first-order accurate. A question that may arise is: does the accuracy improve if we use a second-order method for both \eqref{eq:probA} and \eqref{eq:probB}? In this specific case, yes, but it is not true in general because the splitting introduces a $\mathcal{O}(\Delta t)$ error. The reason why we don't have an error in this case is that we can really decouple the advection and the decay and do these updates in either order. This doesn't happen anymore if for example we take $\beta = 1-x$, because in this case the value depends on the position and applying the B-step before or after the A-step changes the result.
+The first three terms on the right hand side agree with \eqref{eq:unsplit} and the last one is $\mathcal{O}(\Delta t)$, so this method is also consistent and first-order accurate. A question that may arise is: does the accuracy improve if we use a second-order method for both \eqref{eq:probA} and \eqref{eq:probB}? In this specific case, yes, but it is not true in general because the splitting introduces a $\mathcal{O}(\Delta t)$ error. The reason why we don't have an error in this case is that we can really decouple the advection and the decay and do these updates in either order. This doesn't happen anymore if for example we take $\beta = 1-x$, because in this case the value depends on the position and applying the B-step before or after the A-step changes the result. We say that the two subproblems \textit{commute} if there is no splitting error.
 
 \begin{figure*}[!ht]
 	\centering
@@ -684,6 +684,12 @@ The first three terms on the right hand side agree with \eqref{eq:unsplit} and t
 	\caption{Comparison between the exact solution, the unsplit method and the split method with the two different orders of steps. AB is hidden by Unsplit because they are very close.}
 	\label{fi:AB}
 \end{figure*}
+
+\subsection{General Formulation}
+
+\subsection{Strang Splitting}
+
+\subsection{Accuracy}
 
 
 
@@ -709,7 +715,21 @@ The first three terms on the right hand side agree with \eqref{eq:unsplit} and t
 
 \section{Implicit methods and choice of ODE solver}
 
-\section{Stiff and singular source terms and the associated numerical difficulties}
+In the case of Godunov splitting, we want to use a second-order accurate method in order to maintain the right accuracy. However, in general we cannot use multistep methods that require more than one level of data, because we only have $Q_i^*$ to use to compute $Q_i^{n+1}$. Values of $Q_i^*$ from previous time steps cannot be used because they are computed by solving a different problem, that is not our ODE. Runge-Kutta methods are very useful because they calculate their own intermediate values to construct higher-order approximations. For explicit methods, we need to make sure that the method is stable with the used time step.
+
+\hfill
+
+If the ODE $q_t=\psi(q)$ is \textit{stiff} (i.e. such that an extremely small time step is required to solve it with an explicit numerical method), as detailed in Section \ref{stiff}, then an implicit method is needed. The usual choice is the trapezoidal rule:
+
+\begin{equation}\label{eq:trapezoidal}
+	Q_i^{n+1} = Q_i^*+\frac{\Delta t}{2}[\psi(Q_i^*)+\psi(Q_i^{n+1})].
+\end{equation}
+
+Another nice property of the split methods is that they only require the ODE part to be solved implicitly: the hyperbolic part can still be solved with explicit methods.
+
+If $\psi$ depends on derivatives of $q$, these need to be discretized. For example, if $\psi(q)=\mu q_{xx}$, then \eqref{eq:trapezoidal} becomes the Crank-Nicolson method and requires solving a tridiagonal system.
+
+\section{Stiff and singular source terms and the associated numerical difficulties} \label{stiff}
 
 
 % if have a single appendix:
