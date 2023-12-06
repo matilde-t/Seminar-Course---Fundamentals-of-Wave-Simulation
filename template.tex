@@ -1,3 +1,7 @@
+\newcommand{\ca}{\mathcal{A}}
+\newcommand{\cb}{\mathcal{B}}
+\renewcommand{\d}{\Delta}
+
 %% bare_jrnl.tex
 %% V1.4b
 %% 2015/08/26
@@ -632,17 +636,17 @@ We can compute the exact solution of \eqref{eq:advec}, because along the charact
 Of course for this specific example we can easily compute an \textit{unsplit} method
 
 \begin{equation}\label{eq:unsplit}
-	\frac{Q^{n+1}_i-Q^n_i}{\Delta t} = -\bar{u} \frac{Q^n_i-Q^n_{i-1}}{\Delta x}-\beta Q^n_i \Rightarrow Q^{n+1}_i = Q^n_i-\bar{u} \frac{\Delta t}{\Delta x}(Q^n_i-Q^n_{i-1})-\Delta t\beta Q^n_i
+	\frac{Q^{n+1}_i-Q^n_i}{\d t} = -\bar{u} \frac{Q^n_i-Q^n_{i-1}}{\d x}-\beta Q^n_i \Rightarrow Q^{n+1}_i = Q^n_i-\bar{u} \frac{\d t}{\d x}(Q^n_i-Q^n_{i-1})-\d t\beta Q^n_i
 \end{equation}
 
-which is first-order accurate and stable for $0<\bar{u}\frac{\Delta t}{\Delta x}\leq1$.
-A second-order method is also easily obtainable with the Taylor expansion of $q(x,t+\Delta t)$ as explained in \cite{leveque}. An important thing to note is that the full Taylor expansion of \eqref{eq:advec} can be written formally as
+which is first-order accurate and stable for $0<\bar{u}\frac{\d t}{\d x}\leq1$.
+A second-order method is also easily obtainable with the Taylor expansion of $q(x,t+\d t)$ as explained in \cite{leveque}. An important thing to note is that the full Taylor expansion of \eqref{eq:advec} can be written formally as
 
-\begin{equation}
-	e^{-\Delta t(\bar{u}\partial_x+\beta)}q(x,t):=q(x,t+\Delta t)=\sum_{j=0}^{\infty}\frac{(\Delta t)^j}{j!}\partial_t^jq(x,t)=\sum_{j=0}^{\infty}\frac{(\Delta t)^j}{j!}(-\bar{u}\partial_x-\beta)^jq(x,t).
+\begin{equation}\label{eq:sol_op}
+	e^{-\d t(\bar{u}\partial_x+\beta)}q(x,t):=q(x,t+\d t)=\sum_{j=0}^{\infty}\frac{(\d t)^j}{j!}\partial_t^jq(x,t)=\sum_{j=0}^{\infty}\frac{(\d t)^j}{j!}(-\bar{u}\partial_x-\beta)^jq(x,t).
 \end{equation}
 
-The operator $e^{-\Delta t(\bar{u}\partial_x+\beta)}$ is called \textit{solution operator} for the equation \eqref{eq:advec} over a time step of length $\Delta t$.
+The operator $e^{-\d t(\bar{u}\partial_x+\beta)}$ is called \textit{solution operator} for the equation \eqref{eq:advec} over a time step of length $\d t$.
 
 \subsection{Godunov Splitting}
 
@@ -659,20 +663,20 @@ In the case of the advection equation, we can split it into two subproblems:
 The idea is to apply the two methods in an alternating manner, using standard solving stategies, e.g.:
 
 \begin{equation}\label{eq:stepA}
-	\text{A-step: } Q_i^* = Q_i^n - \frac{\bar{u}\Delta t}{\Delta x} (Q_i^n-Q_{i-1}^n),
+	\text{A-step: } Q_i^* = Q_i^n - \frac{\bar{u}\d t}{\d x} (Q_i^n-Q_{i-1}^n),
 \end{equation}
 
 \begin{equation}\label{eq:stepB}
-	\text{B-step: } Q_i^{n+1} = Q_i^*-\beta\Delta tQ_i^*.
+	\text{B-step: } Q_i^{n+1} = Q_i^*-\beta\d tQ_i^*.
 \end{equation}
 
-One may think that given that both $Q_i^*$ and $Q_i^{n+1}$ are calculated using $\Delta t$, the solution is valid for time $2\Delta t$, but it is not really the case: in fact if we combine the two stages and eliminate $Q_i^*$, as detailed in \cite{leveque}, we obtain
+One may think that given that both $Q_i^*$ and $Q_i^{n+1}$ are calculated using $\d t$, the solution is valid for time $2\d t$, but it is not really the case: in fact if we combine the two stages and eliminate $Q_i^*$, as detailed in \cite{leveque}, we obtain
 
 \begin{equation}
-	Q_i^{n+1} = Q_i^n -\frac{\bar{u}\Delta t}{\Delta x}(Q_i^n-Q_{i-1}^n)-\beta\Delta tQ_i^n +\frac{\bar{u}\beta\Delta t^2}{\Delta x}(Q_i^n-Q_{i-1}^n).
+	Q_i^{n+1} = Q_i^n -\frac{\bar{u}\d t}{\d x}(Q_i^n-Q_{i-1}^n)-\beta\d tQ_i^n +\frac{\bar{u}\beta\d t^2}{\d x}(Q_i^n-Q_{i-1}^n).
 \end{equation}
 
-The first three terms on the right hand side agree with \eqref{eq:unsplit} and the last one is $\mathcal{O}(\Delta t)$, so this method is also consistent and first-order accurate. A question that may arise is: does the accuracy improve if we use a second-order method for both \eqref{eq:probA} and \eqref{eq:probB}? In this specific case, yes, but it is not true in general because the splitting introduces a $\mathcal{O}(\Delta t)$ error. The reason why we don't have an error in this case is that we can really decouple the advection and the decay and do these updates in either order. This doesn't happen anymore if for example we take $\beta = 1-x$, because in this case the value depends on the position and applying the B-step before or after the A-step changes the result. We say that the two subproblems \textit{commute} if there is no splitting error.
+The first three terms on the right hand side agree with \eqref{eq:unsplit} and the last one is $\mathcal{O}(\d t)$, so this method is also consistent and first-order accurate. A question that may arise is: does the accuracy improve if we use a second-order method for both \eqref{eq:probA} and \eqref{eq:probB}? In this specific case, yes, but it is not true in general because the splitting introduces a $\mathcal{O}(\d t)$ error. The reason why we don't have an error in this case is that we can really decouple the advection and the decay and do these updates in either order. This doesn't happen anymore if for example we take $\beta = 1-x$, because in this case the value depends on the position and applying the B-step before or after the A-step changes the result. We say that the two subproblems \textit{commute} if there is no splitting error.
 
 \begin{figure*}[!ht]
 	\centering
@@ -685,11 +689,57 @@ The first three terms on the right hand side agree with \eqref{eq:unsplit} and t
 		\label{fig:commuteErr}}
 	\subfloat[]{\includegraphics[width=0.5\textwidth]{NoCommuteErr.png}%
 		\label{fig:nocommuteErr}}
-	\caption{Comparison between the exact solution and the split method with the two different orders of steps. The difference is hardly noticeable in the plot, but the relative error is non-zero. Note that there is a big gap between the analytical  and the numerical solution because we are using a very coarse approximation to highlight the error. The problem has $\bar{u}=1$, $\mathring{q}=\text{Gaussian}(0.25,0.003)$, $\Delta x = \Delta t = 0.02$, $t=0.6$.}
+	\caption{Comparison between the exact solution and the split method with the two different orders of steps. The difference is hardly noticeable in the plot, but the relative error is non-zero. Note that there is a big gap between the analytical  and the numerical solution because we are using a very coarse approximation to highlight the error. The problem has $\bar{u}=1$, $\mathring{q}=\text{Gaussian}(0.25,0.003)$, $\d x = \d t = 0.02$, $t=0.6$.}
 	\label{fi:AB}
 \end{figure*}
 
+% possible TODO: show the offset split-unsplit method
+
 \subsection{General Formulation}
+
+To better understand the commuting property, we consider the more general formulation
+
+\begin{equation}
+	q_t = (\ca+\cb)q
+\end{equation}
+
+where $\ca$ and $\cb$ can be differential operators, such as $-\bar{u}\partial_x$ and $-\beta(x)$ in the case of the advection-reaction equation. To simplify the calculations, we assume that they don't explicitly depend on $t$, so that we can write
+
+\begin{equation}
+	q_{tt} = (\ca+\cb)q_t=(\ca+\cb)^2q
+\end{equation}
+
+without having to take care of the chain rule. If we Taylor expand the solution at time $t$ and use the notation defined in \eqref{eq:sol_op}, we easily get to
+
+\begin{equation}\label{eq:exp_unsplit}
+	q(x,\d t) = \sum_{j=0}^{\infty}\frac{\d t^j}{j!}(\ca + \cb)^jq(x,0) = e^{\d t(\ca +\cb)}q(x,0).
+\end{equation}
+
+With Godunov Splitting, we obtain
+
+\begin{equation*}
+	q^*(x,\d t)=e^{\d t \ca}q(x,0)
+\end{equation*}
+
+and
+
+\begin{equation*}
+	q^{**}(x,\d t)=e^{\d t \cb}q^*(x,\d t) = e^{\d t \cb}e^{\d t \ca}q(x,0).
+\end{equation*}
+
+The splitting error is then
+
+\begin{equation}
+	q(x,\d t)-q^{**}(x,\d t) = (e^{\d t(\ca +\cb)}-e^{\d t \cb}e^{\d t \ca})q(x,0).
+\end{equation}
+
+If we Taylor expand $qx^{**}$, we obtain
+
+\begin{equation}\label{eq:exp_split}
+	q^{**}(x,\d t) = (I+\d t(\ca + \cb)+\frac{1}{2}\d t^2(\ca^2+2\cb\ca+\cb^2)+\dots)q(x,0).
+\end{equation}
+
+It is fundamental to note that in the $\d t^2$ term, in \eqref{eq:exp_unsplit} we have $(\ca +\cb)^2=(\ca +\cb)(\ca +\cb)=\ca^2+\ca\cb+\cb\ca+\cb^2$, which in general is \textit{not} the same as the $(\ca^2+2\cb\ca+\cb^2)$ term that we have in \eqref{eq:exp_split}. We can clearly see now how there is no splitting error only if $\ca\cb=\cb\ca$, that is, if the operators commute. This means that if it is not the case, the Godunov method can only ever be first-order accurate, due to the splitting error.
 
 \subsection{Strang Splitting}
 
@@ -726,7 +776,7 @@ In the case of Godunov splitting, we want to use a second-order accurate method 
 If the ODE $q_t=\psi(q)$ is \textit{stiff} (i.e. such that an extremely small time step is required to solve it with an explicit numerical method), as detailed in Section \ref{stiff}, then an implicit method is needed. The usual choice is the trapezoidal rule:
 
 \begin{equation}\label{eq:trapezoidal}
-	Q_i^{n+1} = Q_i^*+\frac{\Delta t}{2}[\psi(Q_i^*)+\psi(Q_i^{n+1})].
+	Q_i^{n+1} = Q_i^*+\frac{\d t}{2}[\psi(Q_i^*)+\psi(Q_i^{n+1})].
 \end{equation}
 
 Another nice property of the split methods is that they only require the ODE part to be solved implicitly: the hyperbolic part can still be solved with explicit methods.
@@ -737,7 +787,7 @@ If $\psi$ depends on derivatives of $q$, these need to be discretized. For examp
 
 The last consideration of this paper is about stiffness and singularity for source terms. Sometimes it happens that the source term is not distrbuted in space, but rather behaves like a delta function, i.e. is very large only on a small region compared to our domain. This is the case for exaple for chemical reactions that can happen on very different time scales compuared to the fluid dynamic one. If the reaction zone is concentrated, this source term is called \textit{stiff} in analogy with the the ODEs. Another typical example of stiff reacting flow is the \textit{detonation wave}: an explosion where a gas burns in a thin reaction zone and gets propagates in the rest of the gas like a shock wave. The thin reaction zone can be modeled as a delta function.
 
-
+\huge DA FINIRE
 
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
@@ -753,7 +803,6 @@ The last consideration of this paper is about stiffness and singularity for sour
 % starts a section numbered zero.)
 %
 
-
 %\appendices
 %%\section{Proof of the First Zonklar Equation}
 %Appendix one text goes here.
@@ -763,15 +812,11 @@ The last consideration of this paper is about stiffness and singularity for sour
 %\section{}
 %Appendix two text goes here.
 
-
 % Can use something like this to put references on a page
 % by themselves when using endfloat and the captionsoff option.
 \ifCLASSOPTIONcaptionsoff
 	\newpage
 \fi
-
-
-
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
 % adjust value as needed - may need to be readjusted if
@@ -797,7 +842,6 @@ The last consideration of this paper is about stiffness and singularity for sour
 % (used to reserve space for the reference number labels box)
 \begin{thebibliography}{1}
 
-
 	\bibitem{leveque}
 	R.~J.~LeVeque, \emph{Finite Volume Methods for Hyperbolic Problems}.\hskip 1em plus
 	0.5em minus 0.4em\relax Cambridge: Cambridge University Press, 2002.
@@ -812,8 +856,6 @@ The last consideration of this paper is about stiffness and singularity for sour
 	\url{https://github.com/clawpack/riemann_book}
 
 \end{thebibliography}
-
-
 
 % that's all folks
 \end{document}
