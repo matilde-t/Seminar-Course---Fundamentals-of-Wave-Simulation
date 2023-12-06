@@ -717,15 +717,15 @@ without having to take care of the chain rule. If we Taylor expand the solution 
 
 With Godunov Splitting, we obtain
 
-\begin{equation*}
+\begin{equation}
 	q^*(x,\d t)=e^{\d t \ca}q(x,0)
-\end{equation*}
+\end{equation}
 
 and
 
-\begin{equation*}
+\begin{equation}
 	q^{**}(x,\d t)=e^{\d t \cb}q^*(x,\d t) = e^{\d t \cb}e^{\d t \ca}q(x,0).
-\end{equation*}
+\end{equation}
 
 The splitting error is then
 
@@ -742,6 +742,30 @@ If we Taylor expand $qx^{**}$, we obtain
 It is fundamental to note that in the $\d t^2$ term, in \eqref{eq:exp_unsplit} we have $(\ca +\cb)^2=(\ca +\cb)(\ca +\cb)=\ca^2+\ca\cb+\cb\ca+\cb^2$, which in general is \textit{not} the same as the $(\ca^2+2\cb\ca+\cb^2)$ term that we have in \eqref{eq:exp_split}. We can clearly see now how there is no splitting error only if $\ca\cb=\cb\ca$, that is, if the operators commute. This means that if it is not the case, the Godunov method can only ever be first-order accurate, due to the splitting error.
 
 \subsection{Strang Splitting}
+
+Fortunatley, there is an easy way to overcome the first-order limitation of the Godunov splitting and offer second-order accuracy in most cases. It is called \textit{Strang splitting} and the idea is to solve $q_t=\ca q$ over $\frac{\d t}{2}$ at first, then use the result to do a full time step on $q_t=\cb q$, and then complete the iteration with the remaining half time step on $q_t=\ca q$. Of course it works if we swap $\ca$ and $\cb$ too. This means that this time we are approximating $e^{\d t(\ca +\cb)}$ by $e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca}$. the Taylor expansion shows in fact that
+
+\begin{equation}
+	e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca} = I+\d t(\ca + \cb)+\frac{1}{2}\d t^2(\ca^2+\ca\cb+\cb\ca+\cb^2)+\mathcal{O}(\d t^3),
+\end{equation}
+
+so this method correctly captures the equation. We can note that after $n$ time steps we obtain
+
+\begin{equation}\label{eq:recursion}
+	Q^n = \underbrace{(e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca})(e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca})\dots(e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca})}_{n\text{ times}}Q^0.
+\end{equation}
+
+Given that $e^{\frac{1}{2}\d t\ca}e^{\frac{1}{2}\d t\ca} = e^{\d t\ca}$, we see that this method differs from the Godunov one only in the fact that we start and end with a half time step on $\ca$. Another way of obtaining the same result is by alternating the oder of application of $\ca$ and $\cb$, in each time step, i.e.
+
+\begin{equation}
+	\begin{gathered}
+		Q^1 = e^{\d t\ca}e^{\d t\cb}Q^0\\
+		Q^2 = e^{\d t\cb}e^{\d t\ca}Q^1\\
+		\vdots 
+	\end{gathered}
+\end{equation}
+
+Analogously to our analysis of \eqref{eq:recursion}, we can see that the result is essencially the same, but with $\d t$ instead of $\frac{1}{2}\d t$. This is computationally better because it requires less function evaluations, but it is more difficult to implement with variable time steps. Furthermore, it needs an even numer of iterations in order to obtain the desired cancellation of errors.
 
 \subsection{Accuracy}
 
