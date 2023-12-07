@@ -474,7 +474,7 @@
 % and "HIS" in caps to complete the first word.
 \section {Introduction}
 
-\IEEEPARstart{M}{ost} of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code is my own and can be found in \cite{github}. I try to use Julia as an exercise. I also took inspiration from \cite {clawpack} and \cite {riemann}.
+\IEEEPARstart{M}{ost} of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code used to produce the plots is my own and can be found in \cite{github}. I try to use Julia as an exercise. I also took inspiration from \cite {clawpack} and \cite {riemann}.
 
 \section{From Conservation Laws to Balance Laws}
 In this paper, we examine some numerical methods for the solution of \textit{non homogeneous balance laws}. These are an extension of the well-known \textit{conservation laws} of the form $q_t+f(q)_x=0$ by adding a \textit{source term} $\psi(q)$. This is called source term even if physically it represents a sink rather than a source, i.e. a loss of $q$. Our reference equation is therefore
@@ -627,7 +627,7 @@ We can compute the exact solution of \eqref{eq:advec}, because along the charact
 	% where an .eps filename suffix will be assumed under latex, 
 	% and a .pdf suffix will be assumed for pdflatex; or what has been declared
 	% via \DeclareGraphicsExtensions.
-	\caption{Evolution of the exact solution with $\bar{u}=1$, $\beta=1$, and $\mathring{q}=\text{Gaussian}(0.25,0.003)$. We see that the maximum point decreases in time.}
+	\caption{Evolution of the exact solution of the advection-reaction equation with $\bar{u}=1$, $\beta=1$, and $\mathring{q}=\text{Gaussian}(0.25,0.003)$. We see that the maximum point decreases in time.}
 	\label{fig:exact}
 \end{figure}
 
@@ -689,7 +689,7 @@ The first three terms on the right hand side agree with \eqref{eq:unsplit} and t
 		\label{fig:commuteErr}}
 	\subfloat[]{\includegraphics[width=0.5\textwidth]{NoCommuteErr.png}%
 		\label{fig:nocommuteErr}}
-	\caption{Comparison between the exact solution and the split method with the two different orders of steps. The difference is hardly noticeable in the plot, but the relative error is non-zero. Note that there is a big gap between the analytical  and the numerical solution because we are using a very coarse approximation to highlight the error. The problem has $\bar{u}=1$, $\mathring{q}=\text{Gaussian}(0.25,0.003)$, $\d x = \d t = 0.02$, $t=0.6$.}
+	\caption{Comparison between the exact solution of the advection-reaction equation and the split method with the two different orders of steps. The difference is hardly noticeable in the plot, but the relative error is non-zero. Note that there is a big gap between the analytical  and the numerical solution because we are using a very coarse approximation to highlight the error. The problem has $\bar{u}=1$, $\mathring{q}=\text{Gaussian}(0.25,0.003)$, $\d x = \d t = 0.02$, $t=0.6$.}
 	\label{fi:AB}
 \end{figure*}
 
@@ -761,7 +761,7 @@ Given that $e^{\frac{1}{2}\d t\ca}e^{\frac{1}{2}\d t\ca} = e^{\d t\ca}$, we see 
 	\begin{gathered}
 		Q^1 = e^{\d t\ca}e^{\d t\cb}Q^0\\
 		Q^2 = e^{\d t\cb}e^{\d t\ca}Q^1\\
-		\vdots 
+		\vdots
 	\end{gathered}
 \end{equation}
 
@@ -769,6 +769,9 @@ Analogously to our analysis of \eqref{eq:recursion}, we can see that the result 
 
 \subsection{Accuracy}
 
+\huge MANCA
+
+\normalsize
 
 
 
@@ -788,16 +791,11 @@ Analogously to our analysis of \eqref{eq:recursion}, we can see that the result 
 
 
 
-
-
-
-\section{Implicit methods and choice of ODE solver}
+\section{Implicit methods and choice of ODE solver}\label{sec:implicit}
 
 In the case of Godunov splitting, we want to use a second-order accurate method in order to maintain the right accuracy. However, in general we cannot use multistep methods that require more than one level of data, because we only have $Q_i^*$ to use to compute $Q_i^{n+1}$. Values of $Q_i^*$ from previous time steps cannot be used because they are computed by solving a different problem, that is not our ODE. Runge-Kutta methods are very useful because they calculate their own intermediate values to construct higher-order approximations. For explicit methods, we need to make sure that the method is stable with the used time step.
 
-\hfill
-
-If the ODE $q_t=\psi(q)$ is \textit{stiff} (i.e. such that an extremely small time step is required to solve it with an explicit numerical method), as detailed in Section \ref{stiff}, then an implicit method is needed. The usual choice is the trapezoidal rule:
+If the ODE $q_t=\psi(q)$ is \textit{stiff} (i.e. such that an extremely small time step is required to solve it with an explicit numerical method), as detailed in Section \ref{sec:stiff}, then an implicit method is needed. The usual choice is the trapezoidal rule:
 
 \begin{equation}\label{eq:trapezoidal}
 	Q_i^{n+1} = Q_i^*+\frac{\d t}{2}[\psi(Q_i^*)+\psi(Q_i^{n+1})].
@@ -807,11 +805,29 @@ Another nice property of the split methods is that they only require the ODE par
 
 If $\psi$ depends on derivatives of $q$, these need to be discretized. For example, if $\psi(q)=\mu q_{xx}$, then \eqref{eq:trapezoidal} becomes the Crank-Nicolson method and requires solving a tridiagonal system.
 
-\section{Stiff and singular source terms and the associated numerical difficulties} \label{stiff}
+\section{Stiff and singular source terms and the associated numerical difficulties} \label{sec:stiff}
 
-The last consideration of this paper is about stiffness and singularity for source terms. Sometimes it happens that the source term is not distrbuted in space, but rather behaves like a delta function, i.e. is very large only on a small region compared to our domain. This is the case for exaple for chemical reactions that can happen on very different time scales compuared to the fluid dynamic one. If the reaction zone is concentrated, this source term is called \textit{stiff} in analogy with the the ODEs. Another typical example of stiff reacting flow is the \textit{detonation wave}: an explosion where a gas burns in a thin reaction zone and gets propagates in the rest of the gas like a shock wave. The thin reaction zone can be modeled as a delta function.
+The last consideration of this paper is about stiffness and singularity for source terms. Sometimes it happens that the source term is not distrbuted in space, but rather behaves like a delta function, i.e. is very large only on a small region compared to our domain. This is the case for exaple for chemical reactions that can happen on very different time scales compuared to the fluid dynamic one. If the reaction zone is concentrated, this source term is called \textit{stiff} in analogy with the the ODEs. Another typical example of stiff reacting flow is the \textit{detonation wave}: an explosion where a gas burns in a thin reaction zone and gets propagated in the rest of the gas like a shock wave. The thin reaction zone can be modeled as a delta function.
 
-\huge DA FINIRE
+We can say that the solution is evolving on a \textit{slow manifold} in state space and perturbing the solution causes it to produce a rapid transient response followed again bt a slow evolution. A very simple example is
+
+\begin{equation}\label{eq:stiff}
+	u'(t)=-\frac{u(t)}{\tau}
+\end{equation}
+
+where of course $u\equiv0$ is the slow manifold. Solving stiff hyperbolic equations is even more difficult than solving stiff ODEs, because the fastest reactions aren't in equilibrium anywhere: for example in a detonation wave, the wave travels trough space. For some problems the only solution is using an adaptive mesh refinement whereas in other cases using implicit methods may be enough thanks to their good stability properties. As we saw in Section \ref{sec:implicit}, a problem with splitting methods and stiff ODEs is that we cannot use previous time steps, so we are limited in the choice of our solver. The trapezoidal rule seems to work fine for ODEs, but fails for hyperbolic equations with stiff source terms. If we consider \eqref{eq:stiff}, the trapezoidal methods yields
+
+\begin{equation}\label{eq:amplification}
+	U^{n+1} = \left(\frac{1-\frac{1}{2}\frac{\d t}{\tau}}{1+\frac{1}{2}\frac{\d t}{\tau}}\right)U^*.
+\end{equation}
+
+If we start on the slow manifold, in this case $U^*=0$, then $U^{n+1}=0$ and we remain in the slow manifold. In any other case, if $-\frac{\d t}{\tau}\rightarrow-\infty$, then $U^{n+1}=-U^*$ and this means that the coefficient in \eqref{eq:amplification} makes the solution oscillate in time rather than decay as we would expect. It is due to the fact that the trapezoidal rule is an \textit{A-stable} method. In fact, the stability region is the left half plane, but the problem is that it passes through the point at infinity on the Riemann sphere. That's what causes the oscillatory behaviour. We need an \textit{L-stable} method, where the point at infinity is inside the stability region and so the coefficient approaches a value less than $1$ in magnitude. The BDF (backward differentiation formulas) methods have this characteristic and the simplest one is the backward Euler method. In fact for \eqref{eq:stiff}
+
+\begin{equation}
+	U^{n+1}=U^*-\frac{\d t}{\tau}U^{n+1}\Rightarrow U^{n+1} = \left(\frac{1}{1+\frac{\d t}{\tau}}\right)U^*.
+\end{equation}
+
+We note that this time the coefficient tends to zero for $\frac{\d t }{\tau}\rightarrow\infty$. However, the implicit Euler method is only first-order accurate. If we want a second-order, one-step method, a choice can be the TR-BDF2 method. One can find more information in \cite{leveque}.
 
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
