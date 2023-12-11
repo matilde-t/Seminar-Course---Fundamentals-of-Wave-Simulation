@@ -59,14 +59,14 @@ xlabel!("x")
 ylabel!("q(x,t)")
 xlims!(0.7, Inf)
 ylims!(0, 7)
-title!("β = 1")
+title!("Solution, β = 1")
 plot!(legend=:outerbottom, legendcolumns=3)
 png("Commute")
 
 error = @. (QAB - QBA) / QAB
 ab_error = @. QAB - QBA
 scatter(x_, [error ab_error], label=["Relative" "Absolute"])
-title!("Error β = 1")
+title!("Error, β = 1")
 xlabel!("x")
 ylabel!("Error")
 xlims!(0.7, Inf)

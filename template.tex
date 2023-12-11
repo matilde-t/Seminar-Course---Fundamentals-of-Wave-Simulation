@@ -1,7 +1,6 @@
 \newcommand{\ca}{\mathcal{A}}
 \newcommand{\cb}{\mathcal{B}}
 \renewcommand{\d}{\Delta}
-
 %% bare_jrnl.tex
 %% V1.4b
 %% 2015/08/26
@@ -59,9 +58,6 @@
 % If IEEEtran.cls has not been installed into the LaTeX system files,
 % manually specify the path to it like:
 % \documentclass[journal]{../sty/IEEEtran}
-
-
-
 
 
 % Some very useful LaTeX packages include:
@@ -472,12 +468,8 @@
 % 
 % Here we have the typical use of a "T" for an initial drop letter
 % and "HIS" in caps to complete the first word.
-\section {Introduction}
-
-\IEEEPARstart{M}{ost} of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code used to produce the plots is my own and can be found in \cite{github}. I try to use Julia as an exercise. I also took inspiration from \cite {clawpack} and \cite {riemann}.
-
 \section{From Conservation Laws to Balance Laws}
-In this paper, we examine some numerical methods for the solution of \textit{non homogeneous balance laws}. These are an extension of the well-known \textit{conservation laws} of the form $q_t+f(q)_x=0$ by adding a \textit{source term} $\psi(q)$. This is called source term even if physically it represents a sink rather than a source, i.e. a loss of $q$. Our reference equation is therefore
+\IEEEPARstart{I}{n} this paper, we examine some numerical methods for the solution of \textit{non homogeneous balance laws}. These are an extension of the well-known \textit{conservation laws} of the form $q_t+f(q)_x=0$ by adding a \textit{source term} $\psi(q)$. This is called source term even if physically it represents a sink rather than a source, i.e. a loss of $q$. Our reference equation is therefore
 
 \begin{equation} \label{eq:template}
 	q_t + f(q)_x = \psi(q).
@@ -605,11 +597,11 @@ is an independent system of ODEs.
 
 \section{Godunov-Strang splitting}
 
-One standard approach to these problems is using a \textit{fractional-step} or \textit{operator-splitting} method, where we alternate between solving the homogeneous \eqref{eq:hom} and source \eqref{eq:source} term. This allows us to easily use a lot of standard numerical methods for PDEs and ODEs.
+One standard approach to these problems is using a \textit{fractional-step} or \textit{operator-splitting} method, where we alternate between solving the homogeneous \eqref{eq:hom} and source \eqref{eq:source} term. This allows us to easily use many standard numerical methods for PDEs and ODEs.
 
 \subsection{The Advection-Reaction Equation}
 
-The standard example that will be used to illustrate all the following numerical methods is the \textit{advection-reaction} equation, which can be seen as the model for the transport along a flow of a radioactive substance which decays at rate $\beta$ while it's transported at constant speed $\bar{u}$, with initial data $q(x,0)= \mathring{q}(x)$.
+The standard example that will be used to illustrate all the following numerical methods is the \textit{advection-reaction} equation, which can be seen as the model for the transport along a flow of a radioactive substance which decays at rate $\beta$ while it's transported at constant speed $\bar{u}$, with initial conditions $q(x,0)= \mathring{q}(x)$.
 
 \begin{equation}\label{eq:advec}
 	q_t + \bar{u}q_x=-\beta q
@@ -743,7 +735,7 @@ It is fundamental to note that in the $\d t^2$ term, in \eqref{eq:exp_unsplit} w
 
 \subsection{Strang Splitting}
 
-Fortunatley, there is an easy way to overcome the first-order limitation of the Godunov splitting and offer second-order accuracy in most cases. It is called \textit{Strang splitting} and the idea is to solve $q_t=\ca q$ over $\frac{\d t}{2}$ at first, then use the result to do a full time step on $q_t=\cb q$, and then complete the iteration with the remaining half time step on $q_t=\ca q$. Of course it works if we swap $\ca$ and $\cb$ too. This means that this time we are approximating $e^{\d t(\ca +\cb)}$ by $e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca}$. the Taylor expansion shows in fact that
+Fortunately, there is an easy way to overcome the first-order limitation of the Godunov splitting and offer second-order accuracy in most cases. It is called \textit{Strang splitting} and the idea is to solve $q_t=\ca q$ over $\frac{\d t}{2}$ at first, then use the result to do a full time step on $q_t=\cb q$, and then complete the iteration with the remaining half time step on $q_t=\ca q$. Of course it works if we swap $\ca$ and $\cb$ too. This means that this time we are approximating $e^{\d t(\ca +\cb)}$ by $e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca}$. the Taylor expansion shows in fact that
 
 \begin{equation}
 	e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca} = I+\d t(\ca + \cb)+\frac{1}{2}\d t^2(\ca^2+\ca\cb+\cb\ca+\cb^2)+\mathcal{O}(\d t^3),
@@ -765,13 +757,11 @@ Given that $e^{\frac{1}{2}\d t\ca}e^{\frac{1}{2}\d t\ca} = e^{\d t\ca}$, we see 
 	\end{gathered}
 \end{equation}
 
-Analogously to our analysis of \eqref{eq:recursion}, we can see that the result is essencially the same, but with $\d t$ instead of $\frac{1}{2}\d t$. This is computationally better because it requires less function evaluations, but it is more difficult to implement with variable time steps. Furthermore, it needs an even numer of iterations in order to obtain the desired cancellation of errors.
+Analogously to our analysis of \eqref{eq:recursion}, we can see that the result is essentially the same, but with $\d t$ instead of $\frac{1}{2}\d t$. This is computationally better because it requires fewer function evaluations, but it is more difficult to implement with variable time steps. Furthermore, it needs an even number of iterations in order to obtain the desired cancellation of errors.
 
 \subsection{Accuracy}
 
-\huge MANCA
-
-\normalsize
+\texttt{[here there should be some plots about the difference in accuracy between Godunov \\splitting and Strang splitting but my Julia skills are poor and I still haven't figured out why my plots don't work as expected]}
 
 
 
@@ -793,7 +783,7 @@ Analogously to our analysis of \eqref{eq:recursion}, we can see that the result 
 
 \section{Implicit methods and choice of ODE solver}\label{sec:implicit}
 
-In the case of Godunov splitting, we want to use a second-order accurate method in order to maintain the right accuracy. However, in general we cannot use multistep methods that require more than one level of data, because we only have $Q_i^*$ to use to compute $Q_i^{n+1}$. Values of $Q_i^*$ from previous time steps cannot be used because they are computed by solving a different problem, that is not our ODE. Runge-Kutta methods are very useful because they calculate their own intermediate values to construct higher-order approximations. For explicit methods, we need to make sure that the method is stable with the used time step.
+In the case of Godunov splitting, we want to use a second-order accurate method in order to maintain the right accuracy. However, in general we cannot use multistep methods that require more than one level of data, because we only have $Q_i^*$ to use to compute $Q_i^{n+1}$. Values of $Q_i^*$ from previous time steps cannot be used because they are computed by solving a different problem, which is not our ODE. Runge-Kutta methods are very useful because they calculate their own intermediate values to construct higher-order approximations. For explicit methods, we need to make sure that the method is stable with the used time step.
 
 If the ODE $q_t=\psi(q)$ is \textit{stiff} (i.e. such that an extremely small time step is required to solve it with an explicit numerical method), as detailed in Section \ref{sec:stiff}, then an implicit method is needed. The usual choice is the trapezoidal rule:
 
@@ -803,11 +793,11 @@ If the ODE $q_t=\psi(q)$ is \textit{stiff} (i.e. such that an extremely small ti
 
 Another nice property of the split methods is that they only require the ODE part to be solved implicitly: the hyperbolic part can still be solved with explicit methods.
 
-If $\psi$ depends on derivatives of $q$, these need to be discretized. For example, if $\psi(q)=\mu q_{xx}$, then \eqref{eq:trapezoidal} becomes the Crank-Nicolson method and requires solving a tridiagonal system.
+If $\psi$ depends on derivatives of $q$, these need to be discretised. For example, if $\psi(q)=\mu q_{xx}$, then \eqref{eq:trapezoidal} becomes the Crank-Nicolson method and requires solving a tridiagonal system.
 
 \section{Stiff and singular source terms and the associated numerical difficulties} \label{sec:stiff}
 
-The last consideration of this paper is about stiffness and singularity for source terms. Sometimes it happens that the source term is not distrbuted in space, but rather behaves like a delta function, i.e. is very large only on a small region compared to our domain. This is the case for exaple for chemical reactions that can happen on very different time scales compuared to the fluid dynamic one. If the reaction zone is concentrated, this source term is called \textit{stiff} in analogy with the the ODEs. Another typical example of stiff reacting flow is the \textit{detonation wave}: an explosion where a gas burns in a thin reaction zone and gets propagated in the rest of the gas like a shock wave. The thin reaction zone can be modeled as a delta function.
+The last consideration of this paper is about stiffness and singularity for source terms. Sometimes it happens that the source term is not distributed in space, but rather behaves like a delta function, i.e. is very large only on a small region compared to our domain. This is the case for example for chemical reactions that can happen on very different time scales compared to the fluid dynamic one. If the reaction zone is concentrated, this source term is called \textit{stiff} in analogy with the the ODEs. Another typical example of stiff reacting flow is the \textit{detonation wave}: an explosion where a gas burns in a thin reaction zone and gets propagated in the rest of the gas like a shock wave. The thin reaction zone can be modeled as a delta function.
 
 We can say that the solution is evolving on a \textit{slow manifold} in state space and perturbing the solution causes it to produce a rapid transient response followed again bt a slow evolution. A very simple example is
 
@@ -815,7 +805,7 @@ We can say that the solution is evolving on a \textit{slow manifold} in state sp
 	u'(t)=-\frac{u(t)}{\tau}
 \end{equation}
 
-where of course $u\equiv0$ is the slow manifold. Solving stiff hyperbolic equations is even more difficult than solving stiff ODEs, because the fastest reactions aren't in equilibrium anywhere: for example in a detonation wave, the wave travels trough space. For some problems the only solution is using an adaptive mesh refinement whereas in other cases using implicit methods may be enough thanks to their good stability properties. As we saw in Section \ref{sec:implicit}, a problem with splitting methods and stiff ODEs is that we cannot use previous time steps, so we are limited in the choice of our solver. The trapezoidal rule seems to work fine for ODEs, but fails for hyperbolic equations with stiff source terms. If we consider \eqref{eq:stiff}, the trapezoidal methods yields
+where of course $u\equiv0$ is the slow manifold. Solving stiff hyperbolic equations is even more difficult than solving stiff ODEs, because the fastest reactions aren't in equilibrium anywhere: for example in a detonation wave, the wave travels through space. For some problems the only solution is using an adaptive mesh refinement whereas in other cases using implicit methods may be enough thanks to their good stability properties. As we saw in Section \ref{sec:implicit}, a problem with splitting methods and stiff ODEs is that we cannot use previous time steps, so we are limited in the choice of our solver. The trapezoidal rule seems to work fine for ODEs, but fails for hyperbolic equations with stiff source terms. If we consider \eqref{eq:stiff}, the trapezoidal methods yields
 
 \begin{equation}\label{eq:amplification}
 	U^{n+1} = \left(\frac{1-\frac{1}{2}\frac{\d t}{\tau}}{1+\frac{1}{2}\frac{\d t}{\tau}}\right)U^*.
@@ -827,7 +817,7 @@ If we start on the slow manifold, in this case $U^*=0$, then $U^{n+1}=0$ and we 
 	U^{n+1}=U^*-\frac{\d t}{\tau}U^{n+1}\Rightarrow U^{n+1} = \left(\frac{1}{1+\frac{\d t}{\tau}}\right)U^*.
 \end{equation}
 
-We note that this time the coefficient tends to zero for $\frac{\d t }{\tau}\rightarrow\infty$. However, the implicit Euler method is only first-order accurate. If we want a second-order, one-step method, a choice can be the TR-BDF2 method. One can find more information in \cite{leveque}.
+We note that this time the coefficient approaches zero for $\frac{\d t }{\tau}\rightarrow\infty$. However, the implicit Euler method is only first-order accurate. If we want a second-order, one-step method, a choice can be the TR-BDF2 method. One can find more information in \cite{leveque}.
 
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
@@ -880,6 +870,11 @@ We note that this time the coefficient tends to zero for $\frac{\d t }{\tau}\rig
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
+
+\section* {Remarks}
+
+Most of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code used to produce the plots is original work and can be found in \cite{github}. We chose Julia to show the features of the language. Code inspired by \cite {clawpack} and \cite {riemann}.
+
 \begin{thebibliography}{1}
 
 	\bibitem{leveque}
