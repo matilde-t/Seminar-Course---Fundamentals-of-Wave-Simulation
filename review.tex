@@ -12,7 +12,7 @@
 
 \section{Summary of paper}
 
-In this paper, the author explains some methods for the numerical solution of conservation laws, in particular systems of hyperbolic PDEs. An important aspect in the solution of these systems is the eigendecomposition of the of the Jacobian matrix of the flux. In the case of the linear Riemann problem, the eigenvalues represent the propagation speeds of the set of waves that solve the problem. However, if we want to numerically evolve the solution in time with an exact solver, it becomes clear that the discretization is often unfeasible because of the time stepping restriction. This is when approximate solvers come into play. The paper describes the Harten-Lax-van Leer (HLL) solver and its variants, HLLC and HLLEM. The assumption is that the speed of the fastest left and right waves is known and that there are some intermediate states between them. In the HLL case, we consider a single intermediate state obtained through the integral average. In the HLLC case, we consider two intermediate states separated by a single intermediate wave. This intermediate wave is another case-specific assumption. In the HLLEM case instead we consider a non-constant single intermediate state that varies linearly. 
+In this paper, the author explains some methods for the numerical solution of conservation laws, in particular systems of hyperbolic PDEs. An important aspect in the solution of these systems is the eigendecomposition of the of the Jacobian matrix of the flux. In the case of the linear Riemann problem, the eigenvalues represent the propagation speeds of the set of waves that solve the problem. However, if we want to numerically evolve the solution in time with an exact solver, it becomes clear that the discretization is often unfeasible because of the time stepping restriction. This is when approximate solvers come into play. The paper describes the Harten-Lax-van Leer (HLL) solver and its variants: HLLC and HLLEM. The assumption is that the speed of the fastest left and right waves is known and that there are some intermediate states between them. In the HLL case, we consider a single intermediate state obtained through the integral average. In the HLLC case, we consider two intermediate states separated by a single intermediate wave. This intermediate wave is another case-specific assumption. In the HLLEM case instead we consider a non-constant single intermediate state that varies linearly.
 
 \section{Review}
 
@@ -40,9 +40,9 @@ It's better to state at least once, in (8), the time and space dependencies.
 
 \subsection{HLL Solver}
 
-It would be useful to have a quick refresh on what the Rankine-Hugoniot conditions are, given that they are used multiple times. 
+It would be useful to have a quick refresh on what the Rankine-Hugoniot conditions are, given that they are used multiple times.
 
-The difference between HLL and HLLE is not very clear. It seems that HLL is not complete on its own and needs another assumption to complete, but maybe it is worth emphasising. 
+The difference between HLL and HLLE is not very clear. It seems that HLL is not complete on its own and needs another assumption to complete, but maybe it is worth emphasising.
 
 \textsc{Typos}: sepeds, avergae, togheter, execively.
 
