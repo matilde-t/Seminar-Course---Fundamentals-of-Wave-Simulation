@@ -1,0 +1,64 @@
+\documentclass{scrartcl}
+\usepackage[utf8]{inputenc}
+
+\usepackage{todonotes}
+\title{Review: \\Approximate Riemann solvers, HLL and its Variants}
+\author{Anonymous reviewer} % DO NOT UNDER ANY CIRCUMSTANCES CHANGE THIS LINE
+\date{January 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Summary of paper}
+
+In this paper, the author explains some methods for the numerical solution of conservation laws, in particular systems of hyperbolic PDEs. An important aspect in the solution of these systems is the eigendecomposition of the of the Jacobian matrix of the flux. In the case of the linear Riemann problem, the eigenvalues represent the propagation speeds of the set of waves that solve the problem. However, if we want to numerically evolve the solution in time with an exact solver, it becomes clear that the discretization is often unfeasible because of the time stepping restriction. This is when approximate solvers come into play. The paper describes the Harten-Lax-van Leer (HLL) solver and its variants: HLLC and HLLEM. The assumption is that the speed of the fastest left and right waves is known and that there are some intermediate states between them. In the HLL case, we consider a single intermediate state obtained through the integral average. In the HLLC case, we consider two intermediate states separated by a single intermediate wave. This intermediate wave is another case-specific assumption. In the HLLEM case instead we consider a non-constant single intermediate state that varies linearly.
+
+\section{Review}
+
+The paper is very well written: I easily understood most of the content on the first read. I only have a couple of minor comments.
+
+In general, given that the pictures count into the page limit and there are still no numerical results, some paragraphs can be summarized a bit more. However, I am not sure about how strict the page limit is.
+
+It may be useful to emphasise some key terms using bold or italics.
+
+The \textit{Abstract} title can be removed if the section is not used, same goes for \textit{Conclusion}.
+
+\subsection{Introduction}
+
+$\mathcal{Q}$ and $\mathcal{F}$ in (2) can be explained in more detail, especially their time and space relations (write them explicitly at least once).
+
+The first paragraph on the second page can be summarized: the target audience is probably familiar with the concept of discretization. The derivation of the method in (5) can be hinted (it comes from Euler at a first glance). The meaning of the inter cell numerical flux in (6) is also not very clear.
+
+\textsc{Typos}: whith, Riemman, imposible.
+
+\subsection{The Shallow Water Equations}
+
+It's better to state at least once, in (8), the time and space dependencies.
+
+\textsc{Typos}: asociated.
+
+\subsection{HLL Solver}
+
+It would be useful to have a quick refresh on what the Rankine-Hugoniot conditions are, given that they are used multiple times.
+
+The difference between HLL and HLLE is not very clear. It seems that HLL is not complete on its own and needs another assumption to complete, but maybe it is worth emphasising.
+
+\textsc{Typos}: sepeds, avergae, togheter, execively.
+
+\subsection{The HLLC Solver}
+
+This section was really well made. It may be nice explaining why this solver is called HLL\textbf{C}.
+
+\textsc{Typos}: expressionsthat.
+
+\subsection{The HLLEM Solver}
+
+In (32) there is $\delta_*$, but underneath it says "$\delta_*(\tilde{\mathcal{Q}})$ is a diagonal matrix". It is unclear whether this value is a diagonal matrix or a scalar.
+
+\textsc{Typos}: authrs, strenght, unfortunatedly.
+
+
+\end{document}
+
+
