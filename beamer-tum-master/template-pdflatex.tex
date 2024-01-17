@@ -1,11 +1,16 @@
 \documentclass{beamer}
+
+\newcommand{\ca}{\mathcal{A}}
+\newcommand{\cb}{\mathcal{B}}
+\renewcommand{\d}{\Delta}
+
+\usepackage{concmath} 
 \usetheme{Boadilla}
 \usepackage[utf8]{inputenc}
 \usepackage{helvet}
-\usepackage[english, ngerman]{babel}
+\usepackage[english]{babel}
 
 \usepackage{natbib} % for the bibliography
-\bibliographystyle{plainnat}
 \setcitestyle{numbers}
 
 \usecolortheme{tum}
@@ -104,35 +109,81 @@
 	\end{itemize}
 \end{frame}
 
-
-
-%%%%%%%%%%%%%%%%%%% The Advection-Reaction Equation
-\section{The Advection-Reaction Equation}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 %%%%%%%%%%%%%%%%%%% Godunov-Strang splitting
 \section{Godunov-Strang splitting}
+
+%%%%%%%%%%%%%%%%%%% The Advection-Reaction Equation
+\subsection{The Advection-Reaction Equation}
+
+\begin{frame}
+	\frametitle{The Advection-Reaction Equation}
+
+	A standard example that will be used to illustrate the following numerical methods is the \emph{advection-reaction equation}
+
+	\begin{equation}\label{eq:advec}
+		q_t + \bar{u}q_x=-\beta q.
+	\end{equation}
+
+	It can be seen as the model for the transport along a flow of a radioactive substance, where
+
+	\begin{itemize}
+		\item $\beta$ is the \emph{decay} rate
+		\item $\bar{u}$ is the (constant) \emph{transport speed}
+		\item $q(x,0)= \mathring{q}(x)$ is the initial condition.
+	\end{itemize}
+	\pause
+	\begin{block}{Exact solution}
+		Along the characteristic $\frac{dx}{dt}=\bar{u}$ we have $\frac{dq}{dt}=-\beta q$ and it follows that
+
+		\begin{equation}\label{eq:advec_sol}
+			q(x,t) = e^{-\beta t}\mathring{q}(x-\bar{u}t).
+		\end{equation}
+	\end{block}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{The Advection-Reaction Equation: Plot}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.7\textwidth]{../Advection.png}
+
+		\caption{Evolution of the exact solution of the advection-reaction equation with $\bar{u}=1$, $\beta=1$, and $\mathring{q}=\text{Gaussian}(0.25,0.003)$.}
+		\label{fig:exact}
+	\end{figure}
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%% The Unsplit Method
 \subsection{The Unsplit Method}
 
+\begin{frame}
+	\frametitle{The Unsplit Method}
+	Dor this specific example we can easily compute an \emph{unsplit method}
 
+	\begin{align*}\label{eq:unsplit}
+		q_t                          & = -\bar{u}q_x-\beta q                                              \\
+		\frac{Q^{n+1}_i-Q^n_i}{\d t} & = -\bar{u} \frac{Q^n_i-Q^n_{i-1}}{\d x}-\beta Q^n_i                \\
+		Q^{n+1}_i                    & = Q^n_i-\bar{u} \frac{\d t}{\d x}(Q^n_i-Q^n_{i-1})-\d t\beta Q^n_i
+	\end{align*}
 
+	which is first-order accurate and stable for $0<\bar{u}\frac{\d t}{\d x}\leq1$.
+\end{frame}
+
+\begin{frame}
+	\frametitle{Taylor Expansion of the Exact Solution}
+	\begin{block}{Note}
+		The full Taylor expansion of \eqref{eq:advec} can be written formally as
+
+		\begin{equation}\label{eq:sol_op}
+			\begin{gathered}
+				e^{-\d t(\bar{u}\partial_x+\beta)}q(x,t):=q(x,t+\d t)=\\
+				=\sum_{j=0}^{\infty}\frac{(\d t)^j}{j!}\partial_t^jq(x,t)=\sum_{j=0}^{\infty}\frac{(\d t)^j}{j!}(-\bar{u}\partial_x-\beta)^jq(x,t).
+			\end{gathered}
+		\end{equation}
+
+		The operator $e^{-\d t(\bar{u}\partial_x+\beta)}$ is called \emph{solution operator} for the equation \eqref{eq:advec} over a time step of length $\d t$.
+	\end{block}
+\end{frame}
 
 
 
@@ -240,7 +291,6 @@
 
 %%%%%%%%%%%%%%%%%%% Stiff and Singular Source Terms and the Associated Numerical Difficulties
 \section{Stiff and Singular Source Terms and the Associated Numerical Difficulties}
-asdf
 
 
 
@@ -261,218 +311,26 @@ asdf
 
 
 
+%%%%%%%%%%%%%%%%%%% Bibliography
+\begin{frame}
+	\frametitle{Bibliography}
+	\bibliographystyle{amsalpha}
+	\begin{thebibliography}{1}
 
+		\bibitem{leveque}
+		R.~J.~LeVeque, \emph{Finite Volume Methods for Hyperbolic Problems}.\hskip 1em plus
+		0.5em minus 0.4em\relax Cambridge: Cambridge University Press, 2002.
 
+		\bibitem{github}
+		\url{https://github.com/matilde-t/SeminarCourse-FundamentalsOfWaveSimulation}
 
+		\bibitem{clawpack}
+		\url{https://github.com/clawpack/apps/tree/master/fvmbook/chap17}
 
+		\bibitem{riemann}
+		\url{https://github.com/clawpack/riemann_book}
 
-
-
-
-
-
-
-
-
-
-
-% \begin{frame}
-% 	\frametitle{Frametitle}
-% 	\framesubtitle{Framesubtitle}
-% 	Lorem ipsum
-% 	\begin{itemize}
-% 		\item Item 1
-% 		\item Item 2
-% 		\item Item 3
-% 	\end{itemize}
-% 	\vfill
-% 	Question?
-% 	\begin{columns}[t]
-% 		\column{.45\textwidth}
-% 		\begin{block}{Block 1}
-% 			Text 1
-% 		\end{block}
-% 		\column{.45\textwidth}
-% 		\begin{block}{Block 2}
-% 			Text 2
-% 		\end{block}
-% 	\end{columns}
-% \end{frame}
-
-
-
-% % Further Slides
-% \section{Titles}
-% \begin{frame}
-% 	\frametitle{Title}
-% 	Each frame should have a title.
-% \end{frame}
-
-
-
-% \subsection{Subsection no.1.1  }
-% \begin{frame}
-% 	Without title something is missing.
-% \end{frame}
-
-
-
-% \section{Lists}
-% \subsection{Lists I}
-% \begin{frame}
-% 	\frametitle{Unnumbered Lists}
-% 	\begin{itemize}
-% 		\item Introduction to  \LaTeX
-% 		\item Second bullet point
-% 		\item And a third one
-% 		\item The last one
-% 	\end{itemize}
-% \end{frame}
-
-
-
-% \begin{frame}\frametitle{Lists with Pause}
-% 	\begin{itemize}
-% 		\item Introduction to  \LaTeX \pause
-% 		\item Second bullet point \pause
-% 		\item And a third one \pause
-% 		\item The last one
-% 	\end{itemize}
-% \end{frame}
-
-
-
-% \subsection{Lists II}
-% \begin{frame}
-% 	\frametitle{Numbered Lists}
-% 	\begin{enumerate}
-% 		\item Introduction to  \LaTeX
-% 		\item Second bullet point
-% 		\item And a third one
-% 		\item The last one
-% 	\end{enumerate}
-% \end{frame}
-
-
-
-% \begin{frame}
-% 	\frametitle{Numbered Lists with Pause}
-% 	\begin{enumerate}
-% 		\item Introduction to  \LaTeX \pause
-% 		\item Second bullet point \pause
-% 		\item And a third one \pause
-% 		\item The last one
-% 	\end{enumerate}
-% \end{frame}
-
-
-
-% \section{Tables}
-% \subsection{Tables}
-% \begin{frame}
-% 	\frametitle{Tables}
-% 	\begin{tabular}{|c|c|c|}
-% 		\hline
-% 		\textbf{Title} & \textbf{Title} & \textbf{Title} \\
-% 		\hline
-% 		First column   & Second column  & \LaTeX         \\
-% 		\hline
-% 		Second row     & \LaTeX         & Last column    \\
-% 		\hline
-% 	\end{tabular}
-% \end{frame}
-
-
-
-% \section{Blocks \& Math}
-% \subsection{Blocks}
-% \begin{frame}
-% 	\frametitle{Blocks}
-
-% 	\begin{block}{This is a simple block}
-% 		It should contain some text.
-% 	\end{block}
-
-% 	\begin{exampleblock}{Example Block}
-% 		This may be an example.
-% 	\end{exampleblock}
-
-
-% 	\begin{alertblock}{Warning}
-% 		The violent color indicates that this block may alert of something.
-% 	\end{alertblock}
-% \end{frame}
-
-
-
-% \subsection{Math}
-% \begin{frame}
-% 	\frametitle{Math Expressions are a Breeze with \LaTeX \ldots}
-
-% 	\begin{equation}
-% 		p(\mathbf{x}_{k}|\mathbf{Z}_{k}) = \frac{p(\mathbf{z}_{k}|\mathbf{x     }_{k})p(\mathbf{x}_{k}|\mathbf{Z}_{k-1})}{\int \! p(\mathbf{z}_{k}|\mathbf{     x}_{k})p(\mathbf{x}_{k}|\mathbf{Z}_{k-1})\,d\mathbf{x}_{k}}
-% 	\end{equation}
-
-% 	\begin{equation}
-% 		w_{k}^{i} \sim w_{k-1}^{i}\frac{p(\mathbf{z}_{k}|\mathbf{x}_{k}^{i})p(\mathbf{x}_{k}^{i}|\mathbf{x}_{k-1}^{i})}{q(\mathbf{x}_{k}^{i}|\mathbf{x}_{k-1}^{i},\mathbf{z}_{k})}
-% 	\end{equation}
-
-% 	\ldots and Bayes filtering is great!
-
-% \end{frame}
-
-% \section{Multimedia}
-% \subsection{Split Screen}
-% \begin{frame}
-% 	\frametitle{Splitting Screen}
-% 	\begin{columns}
-
-% 		\begin{column}{5cm}
-% 			\begin{itemize}
-% 				\item Here
-% 				\item is some
-% 				\item text
-% 			\end{itemize}
-% 		\end{column}
-
-% 		\begin{column}{5cm}
-% 			\begin{tabular}{|c|c|}
-% 				\hline
-% 				\textbf{On the} & \textbf{other side} \\
-% 				\hline
-% 				there may       & be a table          \\
-% 				\hline
-% 				or even         & a picture as        \\
-% 				\hline
-% 				shown on the    & next frame          \\
-% 				\hline
-% 			\end{tabular}
-% 		\end{column}
-
-% 	\end{columns}
-% \end{frame}
-
-
-
-% \subsection{Pictures}
-% \begin{frame}
-% 	\frametitle{Pictures in Latex Beamer Class}
-% 	\begin{figure}
-% 		\includegraphics[width=0.5\textwidth]{../Advection.png}
-% 		\caption{This is a picture!}
-% 	\end{figure}
-% \end{frame}
-
-
-
-% \subsection{Pictures which Need More Space}
-% \begin{frame}[plain]
-% 	\frametitle{Plain, or a Way to Get More Space}
-% 	\begin{figure}
-% 		\includegraphics[width=0.5\textwidth]{../Advection.png}
-% 		\caption{Picture again.}
-% 	\end{figure}
-% \end{frame}
-
+	\end{thebibliography}
+\end{frame}
 
 \end{document}

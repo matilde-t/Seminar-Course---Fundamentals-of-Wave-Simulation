@@ -2,5 +2,10 @@
 *.fdb*
 *.fls
 *.log
-*.pdf
 *.sync*
+*.toc
+*.snm
+*.nav
+*.out
+*.vrb
+*.bak*
