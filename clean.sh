@@ -9,9 +9,3 @@ find . -type f -name '*.nav' -delete
 find . -type f -name '*.out' -delete
 find . -type f -name '*.bak*' -delete
 find . -type f -name '*.vrb' -delete
-
-rm ./*.aux
-rm ./*.fdb*
-rm ./*.fls
-rm ./*.log
-rm ./*.sync*
