@@ -127,9 +127,9 @@
 	It can be seen as the model for the transport along a flow of a radioactive substance, where
 
 	\begin{itemize}
-		\item $\beta$ is the \emph{decay} rate
+		\item $\beta$ is the \emph{decay rate}
 		\item $\bar{u}$ is the (constant) \emph{transport speed}
-		\item $q(x,0)= \mathring{q}(x)$ is the initial condition.
+		\item $q(x,0)= \mathring{q}(x)$ is the \emph{initial condition}.
 	\end{itemize}
 	\pause
 	\begin{block}{Exact solution}
@@ -199,9 +199,46 @@
 %%%%%%%%%%%%%%%%%%% Godunov Splitting
 \subsection{Godunov Splitting}
 
+\begin{frame}
+	\frametitle{Godunov Splitting}
+	In the case of the advection equation, we can split it into two subproblems:
 
+	\begin{equation}\label{eq:probA}
+		\text{Problem A: } q_t+\bar{u}q_x=0,
+	\end{equation}
 
+	\begin{equation}\label{eq:probB}
+		\text{Problem B: } q_t = -\beta q.
+	\end{equation}
 
+	The idea is to apply the two methods in an alternating manner, using standard solving stategies, e.g.:
+
+	\begin{equation}\label{eq:stepA}
+		\text{A-step: } Q_i^* = Q_i^n - \frac{\bar{u}\d t}{\d x} (Q_i^n-Q_{i-1}^n),
+	\end{equation}
+
+	\begin{equation}\label{eq:stepB}
+		\text{B-step: } Q_i^{n+1} = Q_i^*-\beta\d tQ_i^*.
+	\end{equation}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Unsplit Method vs Godunov Splitting}
+
+	One may think that given that both $Q_i^*$ and $Q_i^{n+1}$ are calculated using $\d t$, the solution is valid for time $2\d t$, but it is not really the case: in fact if we combine the two stages and eliminate $Q_i^*$, we obtain
+
+	\begin{equation*}
+		Q_i^{n+1} = Q_i^n -\frac{\bar{u}\d t}{\d x}(Q_i^n-Q_{i-1}^n)-\beta\d tQ_i^n +\frac{\bar{u}\beta\d t^2}{\d x}(Q_i^n-Q_{i-1}^n),
+	\end{equation*}
+
+	which differs from the unsplit method for the last term:
+
+	\begin{equation*}
+		Q^{n+1}_i = Q^n_i-\bar{u} \frac{\d t}{\d x}(Q^n_i-Q^n_{i-1})-\d t\beta Q^n_i
+	\end{equation*}
+
+\end{frame}
 
 
 
