@@ -1,10 +1,6 @@
 \documentclass{beamer}
 
-\newcommand{\ca}{\mathcal{A}}
-\newcommand{\cb}{\mathcal{B}}
-\renewcommand{\d}{\Delta}
-
-\usepackage{concmath} 
+% \usepackage{concmath} 
 \usetheme{Boadilla}
 \usepackage[utf8]{inputenc}
 \usepackage{helvet}
@@ -75,7 +71,11 @@
 \institute[]{Seminar Course - Fundamentals of Wave Simulation - Solving Hyperbolic Systems of PDEs}
 \date[January 2024]{January 2024}
 
+\newcommand{\ca}{\mathcal{A}}
+\newcommand{\cb}{\mathcal{B}}
+\renewcommand{\d}{\Delta}
 \renewcommand{\emph}[1]{\textcolor{tum}{\textbf{#1}}}
+\graphicspath{{../Code/}{..}}
 
 \begin{document}
 \beamertemplatenavigationsymbolsempty
@@ -240,7 +240,24 @@
 
 \end{frame}
 
+\begin{frame}
+	\frametitle{Commuting vs Non-commuting operators}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=0.4\textwidth]{Commute.png}%
+		\label{fig:commute}
+		\includegraphics[width=0.4\textwidth]{NoCommute.png}%
+		\label{fig:nocommute}
 
+		\includegraphics[width=0.4\textwidth]{CommuteErr.png}%
+		\label{fig:commuteErr}
+		\includegraphics[width=0.4\textwidth]{NoCommuteErr.png}%
+		\label{fig:nocommuteErr}
+		\caption{Comparison between the exact solution of the advection-reaction equation and the split method with the two different orders of steps. The problem has $\bar{u}=1$, $\mathring{q}=\text{Gaussian}(0.25,0.003)$, $\d x = \d t = 0.02$, $t=0.6$.}
+		\label{fi:AB}
+	\end{figure}
+
+\end{frame}
 
 
 
@@ -251,9 +268,56 @@
 
 %%%%%%%%%%%%%%%%%%% General Formulation
 \subsection{General Formulation}
+\begin{frame}
+	\frametitle{General Formulation}
+	Consider the more general formulation
+
+	\begin{equation}
+		q_t = (\ca+\cb)q
+	\end{equation}
+
+	where $\ca$ and $\cb$ can be differential operators. We assume that they don't explicitly depend on $t$, so that we can write
+
+	\begin{equation}
+		q_{tt} = (\ca+\cb)q_t=(\ca+\cb)^2q
+	\end{equation}
+
+	If we Taylor expand the solution at time $t$ and use the notation defined in \eqref{eq:sol_op}, we easily get to
+
+	\begin{equation}\label{eq:exp_unsplit}
+		q(x,\d t) = \sum_{j=0}^{\infty}\frac{\d t^j}{j!}(\ca + \cb)^jq(x,0) = e^{\d t(\ca +\cb)}q(x,0).
+	\end{equation}
 
 
+\end{frame}
 
+\begin{frame}
+	\frametitle{General Formulation II}
+	With Godunov Splitting, we obtain
+
+	\begin{equation}
+		q^*(x,\d t)=e^{\d t \ca}q(x,0)
+	\end{equation}
+
+	and
+
+	\begin{equation}
+		q^{**}(x,\d t)=e^{\d t \cb}q^*(x,\d t) = e^{\d t \cb}e^{\d t \ca}q(x,0).
+	\end{equation}
+
+	The splitting error is then
+
+	\begin{equation}
+		q(x,\d t)-q^{**}(x,\d t) = (e^{\d t(\ca +\cb)}-e^{\d t \cb}e^{\d t \ca})q(x,0).
+	\end{equation}
+
+	If we Taylor expand $qx^{**}$, we obtain
+
+	\begin{equation}\label{eq:exp_split}
+		q^{**}(x,\d t) = (I+\d t(\ca + \cb)+\frac{1}{2}\d t^2(\ca^2+2\cb\ca+\cb^2)+\dots)q(x,0).
+	\end{equation}
+
+\end{frame}
 
 
 
@@ -270,7 +334,32 @@
 
 %%%%%%%%%%%%%%%%%%% Strang Splitting
 \subsection{Strang Splitting}
+\begin{frame}
+	\frametitle{Strang Splitting}
+	With the \textit{Strang splitting} we are approximating $e^{\d t(\ca +\cb)}$ by $e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca}$. The Taylor expansion shows in fact that
 
+	\begin{equation}
+		e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca} = I+\d t(\ca + \cb)+\frac{1}{2}\d t^2(\ca^2+\ca\cb+\cb\ca+\cb^2)+\mathcal{O}(\d t^3).
+	\end{equation}
+
+	After $n$ time steps we obtain
+
+	\begin{equation}\label{eq:recursion}
+		Q^n = \underbrace{(e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca})(e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca})\dots(e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca})}_{n\text{ times}}Q^0.
+	\end{equation}
+
+	Another way of obtaining the same result is by alternating the oder of application of $\ca$ and $\cb$, in each time step, i.e.
+
+	\begin{equation}
+		\begin{gathered}
+			Q^1 = e^{\d t\ca}e^{\d t\cb}Q^0\\
+			Q^2 = e^{\d t\cb}e^{\d t\ca}Q^1\\
+			\vdots
+		\end{gathered}
+	\end{equation}
+
+	Analogously to our analysis of \eqref{eq:recursion}, we can see that the result is essentially the same, but with $\d t$ instead of $\frac{1}{2}\d t$. This is computationally better because it requires fewer function evaluations, but it is more difficult to implement with variable time steps. Furthermore, it needs an even number of iterations in order to obtain the desired cancellation of errors.
+\end{frame}
 
 
 

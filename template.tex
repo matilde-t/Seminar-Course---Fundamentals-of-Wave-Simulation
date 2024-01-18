@@ -668,7 +668,7 @@ One may think that given that both $Q_i^*$ and $Q_i^{n+1}$ are calculated using 
 	Q_i^{n+1} = Q_i^n -\frac{\bar{u}\d t}{\d x}(Q_i^n-Q_{i-1}^n)-\beta\d tQ_i^n +\frac{\bar{u}\beta\d t^2}{\d x}(Q_i^n-Q_{i-1}^n).
 \end{equation}
 
-The first three terms on the right hand side agree with \eqref{eq:unsplit} and the last one is $\mathcal{O}(\d t)$, so this method is also consistent and first-order accurate. A question that may arise is: does the accuracy improve if we use a second-order method for both \eqref{eq:probA} and \eqref{eq:probB}? In this specific case, yes, but it is not true in general because the splitting introduces a $\mathcal{O}(\d t)$ error. The reason why we don't have an error in this case is that we can really decouple the advection and the decay and do these updates in either order. This doesn't happen anymore if for example we take $\beta = 1-x$, because in this case the value depends on the position and applying the B-step before or after the A-step changes the result. We say that the two subproblems \textit{commute} if there is no splitting error.
+The first three terms on the right hand side agree with \eqref{eq:unsplit} and the last one is $\mathcal{O}(\d t^2)$, so this method is also consistent and first-order accurate. A question that may arise is: does the accuracy improve if we use a second-order method for both \eqref{eq:probA} and \eqref{eq:probB}? In this specific case, yes, but it is not true in general because the splitting introduces a $\mathcal{O}(\d t)$ error. The reason why we don't have an error in this case is that we can really decouple the advection and the decay and do these updates in either order. This doesn't happen anymore if for example we take $\beta = 1-x$, because in this case the value depends on the position and applying the B-step before or after the A-step changes the result. We say that the two subproblems \textit{commute} if there is no splitting error.
 
 \begin{figure*}[!ht]
 	\centering
@@ -735,7 +735,7 @@ It is fundamental to note that in the $\d t^2$ term, in \eqref{eq:exp_unsplit} w
 
 \subsection{Strang Splitting}
 
-Fortunately, there is an easy way to overcome the first-order limitation of the Godunov splitting and offer second-order accuracy in most cases. It is called \textit{Strang splitting} and the idea is to solve $q_t=\ca q$ over $\frac{\d t}{2}$ at first, then use the result to do a full time step on $q_t=\cb q$, and then complete the iteration with the remaining half time step on $q_t=\ca q$. Of course it works if we swap $\ca$ and $\cb$ too. This means that this time we are approximating $e^{\d t(\ca +\cb)}$ by $e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca}$. the Taylor expansion shows in fact that
+Fortunately, there is an easy way to overcome the first-order limitation of the Godunov splitting and offer second-order accuracy in most cases. It is called \textit{Strang splitting} and the idea is to solve $q_t=\ca q$ over $\frac{\d t}{2}$ at first, then use the result to do a full time step on $q_t=\cb q$, and then complete the iteration with the remaining half time step on $q_t=\ca q$. Of course it works if we swap $\ca$ and $\cb$ too. This means that this time we are approximating $e^{\d t(\ca +\cb)}$ by $e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca}$. The Taylor expansion shows in fact that
 
 \begin{equation}
 	e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca} = I+\d t(\ca + \cb)+\frac{1}{2}\d t^2(\ca^2+\ca\cb+\cb\ca+\cb^2)+\mathcal{O}(\d t^3),
