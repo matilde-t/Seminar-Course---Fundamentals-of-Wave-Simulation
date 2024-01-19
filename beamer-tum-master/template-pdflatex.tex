@@ -1,6 +1,6 @@
 \documentclass{beamer}
 
-% \usepackage{concmath} 
+\usepackage{concmath} 
 \usetheme{Boadilla}
 \usepackage[utf8]{inputenc}
 \usepackage{helvet}
@@ -293,7 +293,7 @@
 
 \begin{frame}
 	\frametitle{General Formulation II}
-	With Godunov Splitting, we obtain
+	With \emph{Godunov splitting}, we obtain
 
 	\begin{equation}
 		q^*(x,\d t)=e^{\d t \ca}q(x,0)
@@ -336,7 +336,7 @@
 \subsection{Strang Splitting}
 \begin{frame}
 	\frametitle{Strang Splitting}
-	With the \textit{Strang splitting} we are approximating $e^{\d t(\ca +\cb)}$ by $e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca}$. The Taylor expansion shows in fact that
+	With the \emph{Strang splitting} we are approximating $e^{\d t(\ca +\cb)}$ by $e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca}$. The Taylor expansion shows in fact that
 
 	\begin{equation}
 		e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca} = I+\d t(\ca + \cb)+\frac{1}{2}\d t^2(\ca^2+\ca\cb+\cb\ca+\cb^2)+\mathcal{O}(\d t^3).
@@ -348,7 +348,13 @@
 		Q^n = \underbrace{(e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca})(e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca})\dots(e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca})}_{n\text{ times}}Q^0.
 	\end{equation}
 
-	Another way of obtaining the same result is by alternating the oder of application of $\ca$ and $\cb$, in each time step, i.e.
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Strang Splitting II}
+
+	Another way of obtaining the same result is 
 
 	\begin{equation}
 		\begin{gathered}
@@ -358,10 +364,13 @@
 		\end{gathered}
 	\end{equation}
 
-	Analogously to our analysis of \eqref{eq:recursion}, we can see that the result is essentially the same, but with $\d t$ instead of $\frac{1}{2}\d t$. This is computationally better because it requires fewer function evaluations, but it is more difficult to implement with variable time steps. Furthermore, it needs an even number of iterations in order to obtain the desired cancellation of errors.
+	It is essentially the same, but with $\d t$ instead of $\frac{1}{2}\d t$. 
+
+	\begin{itemize}
+		\item \textbf{Pros}: computationally cheaper (fewer function evaluations)
+		\item \textbf{Cons}: difficult to implement wit variable time steps, needs an even number of iterations
+	\end{itemize}
 \end{frame}
-
-
 
 
 
@@ -401,7 +410,16 @@
 %%%%%%%%%%%%%%%%%%% Implicit Methods and Choice of ODE Solver
 \section{Implicit Methods and Choice of ODE Solver}
 
+\begin{frame}
+	\frametitle{Implicit Methods and Choice of ODE Solver}
+	If the ODE $q_t=\psi(q)$ is \emph{stiff} (i.e. such that an extremely small time step is required to solve it with an explicit numerical method), then an \emph{implicit} method is needed. The usual choice is the \emph{trapezoidal rule}:
 
+	\begin{equation}\label{eq:trapezoidal}
+		Q_i^{n+1} = Q_i^*+\frac{\d t}{2}[\psi(Q_i^*)+\psi(Q_i^{n+1})].
+	\end{equation}
+
+	Another nice property of the split methods is that they only require the ODE part to be solved implicitly: the hyperbolic part can still be solved with explicit methods.
+\end{frame}
 
 
 
@@ -418,13 +436,59 @@
 %%%%%%%%%%%%%%%%%%% Stiff and Singular Source Terms and the Associated Numerical Difficulties
 \section{Stiff and Singular Source Terms and the Associated Numerical Difficulties}
 
+\begin{frame}
+	\frametitle{Stiff and Singular Source Terms}
 
+	If the source term is concentrated in space, it is called \emph{stiff} in analogy with the the ODEs.
 
+	We can say that the solution is evolving on a \emph{slow manifold} in state space and perturbing the solution causes it to produce a rapid transient response followed again by a slow evolution. A very simple example is
 
+	\begin{equation}\label{eq:stiff}
+		u'(t)=-\frac{u(t)}{\tau}
+	\end{equation}
 
+	where of course $u\equiv0$ is the slow manifold. For some problems the only solution is using an adaptive mesh refinement whereas in other cases using implicit methods may be enough thanks to their good stability properties.
+\end{frame}
 
+\begin{frame}
+	\frametitle{Numerical Difficulties}
+	The trapezoidal rule seems to work fine for ODEs, but fails for hyperbolic equations with stiff source terms. If we consider \eqref{eq:stiff}, the trapezoidal methods yields
 
+	\begin{equation}\label{eq:amplification}
+		U^{n+1} = \left(\frac{1-\frac{1}{2}\frac{\d t}{\tau}}{1+\frac{1}{2}\frac{\d t}{\tau}}\right)U^*.
+	\end{equation}
 
+	If we start on the slow manifold, in this case $U^*=0$, then $U^{n+1}=0$ and we remain in the slow manifold. In any other case, if $-\frac{\d t}{\tau}\rightarrow-\infty$, then $U^{n+1}=-U^*$ and this means that the coefficient in \eqref{eq:amplification} makes the solution oscillate in time rather than decay as we would expect.
+\end{frame}
+
+\begin{frame}
+	\frametitle{Numerical Difficulties II}
+
+	This is due to the fact that the trapezoidal rule is an \emph{A-stable} method: the stability region is the left half plane, but the problem is that it passes through the point at infinity on the Riemann sphere. That's what causes the oscillatory behaviour. We need an \emph{L-stable} method, where the point at infinity is inside the stability region and so the coefficient approaches a value less than $1$ in magnitude. 
+
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=0.4\textwidth]{TrapezoidalStability.png}%
+		\label{fig:TrapezoidalStability}
+		\includegraphics[width=0.4\textwidth]{EulerStability.png}%
+		\label{fig:EulerStability}
+
+		\caption{Stability region of the trapezoidal rule (left) and implicit Euler  (right)}
+		\label{fi:stability}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Backward Differentiation Formulas}
+
+	The \emph{BDF} (Backward Differentiation Formulas) methods have this characteristic and the simplest one is the backward Euler method. In fact for \eqref{eq:stiff}
+
+	\begin{equation}
+		U^{n+1}=U^*-\frac{\d t}{\tau}U^{n+1}\Rightarrow U^{n+1} = \left(\frac{1}{1+\frac{\d t}{\tau}}\right)U^*.
+	\end{equation}
+
+	This time the coefficient approaches zero for $\frac{\d t }{\tau}\rightarrow\infty$. However, the implicit Euler method is only first-order accurate.
+\end{frame}
 
 
 

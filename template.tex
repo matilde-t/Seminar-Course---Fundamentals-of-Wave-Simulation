@@ -707,7 +707,7 @@ without having to take care of the chain rule. If we Taylor expand the solution 
 	q(x,\d t) = \sum_{j=0}^{\infty}\frac{\d t^j}{j!}(\ca + \cb)^jq(x,0) = e^{\d t(\ca +\cb)}q(x,0).
 \end{equation}
 
-With Godunov Splitting, we obtain
+With Godunov splitting, we obtain
 
 \begin{equation}
 	q^*(x,\d t)=e^{\d t \ca}q(x,0)
@@ -799,7 +799,7 @@ If $\psi$ depends on derivatives of $q$, these need to be discretised. For examp
 
 The last consideration of this paper is about stiffness and singularity for source terms. Sometimes it happens that the source term is not distributed in space, but rather behaves like a delta function, i.e. is very large only on a small region compared to our domain. This is the case for example for chemical reactions that can happen on very different time scales compared to the fluid dynamic one. If the reaction zone is concentrated, this source term is called \textit{stiff} in analogy with the the ODEs. Another typical example of stiff reacting flow is the \textit{detonation wave}: an explosion where a gas burns in a thin reaction zone and gets propagated in the rest of the gas like a shock wave. The thin reaction zone can be modeled as a delta function.
 
-We can say that the solution is evolving on a \textit{slow manifold} in state space and perturbing the solution causes it to produce a rapid transient response followed again bt a slow evolution. A very simple example is
+We can say that the solution is evolving on a \textit{slow manifold} in state space and perturbing the solution causes it to produce a rapid transient response followed again by a slow evolution. A very simple example is
 
 \begin{equation}\label{eq:stiff}
 	u'(t)=-\frac{u(t)}{\tau}
@@ -811,7 +811,7 @@ where of course $u\equiv0$ is the slow manifold. Solving stiff hyperbolic equati
 	U^{n+1} = \left(\frac{1-\frac{1}{2}\frac{\d t}{\tau}}{1+\frac{1}{2}\frac{\d t}{\tau}}\right)U^*.
 \end{equation}
 
-If we start on the slow manifold, in this case $U^*=0$, then $U^{n+1}=0$ and we remain in the slow manifold. In any other case, if $-\frac{\d t}{\tau}\rightarrow-\infty$, then $U^{n+1}=-U^*$ and this means that the coefficient in \eqref{eq:amplification} makes the solution oscillate in time rather than decay as we would expect. It is due to the fact that the trapezoidal rule is an \textit{A-stable} method. In fact, the stability region is the left half plane, but the problem is that it passes through the point at infinity on the Riemann sphere. That's what causes the oscillatory behaviour. We need an \textit{L-stable} method, where the point at infinity is inside the stability region and so the coefficient approaches a value less than $1$ in magnitude. The BDF (backward differentiation formulas) methods have this characteristic and the simplest one is the backward Euler method. In fact for \eqref{eq:stiff}
+If we start on the slow manifold, in this case $U^*=0$, then $U^{n+1}=0$ and we remain in the slow manifold. In any other case, if $-\frac{\d t}{\tau}\rightarrow-\infty$, then $U^{n+1}=-U^*$ and this means that the coefficient in \eqref{eq:amplification} makes the solution oscillate in time rather than decay as we would expect. It is due to the fact that the trapezoidal rule is an \textit{A-stable} method. In fact, the stability region is the left half plane, but the problem is that it passes through the point at infinity on the Riemann sphere. That's what causes the oscillatory behaviour. We need an \textit{L-stable} method, where the point at infinity is inside the stability region and so the coefficient approaches a value less than $1$ in magnitude. The BDF (Backward Differentiation Formulas) methods have this characteristic and the simplest one is the backward Euler method. In fact for \eqref{eq:stiff}
 
 \begin{equation}
 	U^{n+1}=U^*-\frac{\d t}{\tau}U^{n+1}\Rightarrow U^{n+1} = \left(\frac{1}{1+\frac{\d t}{\tau}}\right)U^*.
