@@ -652,7 +652,7 @@ In the case of the advection equation, we can split it into two subproblems:
 	\text{Problem B: } q_t = -\beta q.
 \end{equation}
 
-The idea is to apply the two methods in an alternating manner, using standard solving stategies, e.g.:
+The idea is to solve the two problems in an alternating manner, using standard solving stategies, e.g.:
 
 \begin{equation}\label{eq:stepA}
 	\text{A-step: } Q_i^* = Q_i^n - \frac{\bar{u}\d t}{\d x} (Q_i^n-Q_{i-1}^n),
@@ -725,7 +725,7 @@ The splitting error is then
 	q(x,\d t)-q^{**}(x,\d t) = (e^{\d t(\ca +\cb)}-e^{\d t \cb}e^{\d t \ca})q(x,0).
 \end{equation}
 
-If we Taylor expand $qx^{**}$, we obtain
+If we Taylor expand $q^{**}$, we obtain
 
 \begin{equation}\label{eq:exp_split}
 	q^{**}(x,\d t) = (I+\d t(\ca + \cb)+\frac{1}{2}\d t^2(\ca^2+2\cb\ca+\cb^2)+\dots)q(x,0).

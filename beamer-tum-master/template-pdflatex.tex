@@ -74,7 +74,7 @@
 \newcommand{\ca}{\mathcal{A}}
 \newcommand{\cb}{\mathcal{B}}
 \renewcommand{\d}{\Delta}
-\renewcommand{\emph}[1]{\textcolor{tum}{\textbf{#1}}}
+\newcommand{\emp}[1]{\textcolor{tum}{\textbf{#1}}}
 \graphicspath{{../Code/}{..}}
 
 \begin{document}
@@ -101,8 +101,8 @@
 	\end{equation}
 	where
 	\begin{itemize}
-		\item the homogeneous equation $q_t +f(q)_x = 0$ is \emph{hyperbolic}
-		\item $\psi(q)$ (the \emph{source terms}) don't depend on derivatives of $q$
+		\item the homogeneous equation $q_t +f(q)_x = 0$ is \emp{hyperbolic}
+		\item $\psi(q)$ (the \emp{source terms}) don't depend on derivatives of $q$
 		      \begin{itemize}
 			      \item $\Rightarrow$ $q_t = \psi(q)$ is an independent system of ODEs
 		      \end{itemize}
@@ -118,7 +118,7 @@
 \begin{frame}
 	\frametitle{The Advection-Reaction Equation}
 
-	A standard example that will be used to illustrate the following numerical methods is the \emph{advection-reaction equation}
+	A standard example that will be used to illustrate the following numerical methods is the \emp{advection-reaction equation}
 
 	\begin{equation}\label{eq:advec}
 		q_t + \bar{u}q_x=-\beta q.
@@ -127,9 +127,9 @@
 	It can be seen as the model for the transport along a flow of a radioactive substance, where
 
 	\begin{itemize}
-		\item $\beta$ is the \emph{decay rate}
-		\item $\bar{u}$ is the (constant) \emph{transport speed}
-		\item $q(x,0)= \mathring{q}(x)$ is the \emph{initial condition}.
+		\item $\beta$ is the \emp{decay rate}
+		\item $\bar{u}$ is the (constant) \emp{transport speed}
+		\item $q(x,0)= \mathring{q}(x)$ is the \emp{initial condition}.
 	\end{itemize}
 	\pause
 	\begin{block}{Exact solution}
@@ -158,7 +158,7 @@
 
 \begin{frame}
 	\frametitle{The Unsplit Method}
-	Dor this specific example we can easily compute an \emph{unsplit method}
+	Dor this specific example we can easily compute an \emp{unsplit method}
 
 	\begin{align*}\label{eq:unsplit}
 		q_t                          & = -\bar{u}q_x-\beta q                                              \\
@@ -181,7 +181,7 @@
 			\end{gathered}
 		\end{equation}
 
-		The operator $e^{-\d t(\bar{u}\partial_x+\beta)}$ is called \emph{solution operator} for the equation \eqref{eq:advec} over a time step of length $\d t$.
+		The operator $e^{-\d t(\bar{u}\partial_x+\beta)}$ is called \emp{solution operator} for the equation \eqref{eq:advec} over a time step of length $\d t$.
 	\end{block}
 \end{frame}
 
@@ -211,7 +211,7 @@
 		\text{Problem B: } q_t = -\beta q.
 	\end{equation}
 
-	The idea is to apply the two methods in an alternating manner, using standard solving stategies, e.g.:
+	The idea is to solve the two problems in an alternating manner, using standard solving stategies, e.g.:
 
 	\begin{equation}\label{eq:stepA}
 		\text{A-step: } Q_i^* = Q_i^n - \frac{\bar{u}\d t}{\d x} (Q_i^n-Q_{i-1}^n),
@@ -293,7 +293,7 @@
 
 \begin{frame}
 	\frametitle{General Formulation II}
-	With \emph{Godunov splitting}, we obtain
+	With \emp{Godunov splitting}, we obtain
 
 	\begin{equation}
 		q^*(x,\d t)=e^{\d t \ca}q(x,0)
@@ -311,7 +311,7 @@
 		q(x,\d t)-q^{**}(x,\d t) = (e^{\d t(\ca +\cb)}-e^{\d t \cb}e^{\d t \ca})q(x,0).
 	\end{equation}
 
-	If we Taylor expand $qx^{**}$, we obtain
+	If we Taylor expand $q^{**}$, we obtain
 
 	\begin{equation}\label{eq:exp_split}
 		q^{**}(x,\d t) = (I+\d t(\ca + \cb)+\frac{1}{2}\d t^2(\ca^2+2\cb\ca+\cb^2)+\dots)q(x,0).
@@ -336,7 +336,7 @@
 \subsection{Strang Splitting}
 \begin{frame}
 	\frametitle{Strang Splitting}
-	With the \emph{Strang splitting} we are approximating $e^{\d t(\ca +\cb)}$ by $e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca}$. The Taylor expansion shows in fact that
+	With the \emp{Strang splitting} we are approximating $e^{\d t(\ca +\cb)}$ by $e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca}$. The Taylor expansion shows in fact that
 
 	\begin{equation}
 		e^{\frac{1}{2}\d t\ca}e^{\d t\cb}e^{\frac{1}{2}\d t\ca} = I+\d t(\ca + \cb)+\frac{1}{2}\d t^2(\ca^2+\ca\cb+\cb\ca+\cb^2)+\mathcal{O}(\d t^3).
@@ -354,7 +354,7 @@
 \begin{frame}
 	\frametitle{Strang Splitting II}
 
-	Another way of obtaining the same result is 
+	Another way of obtaining the same result is
 
 	\begin{equation}
 		\begin{gathered}
@@ -364,11 +364,11 @@
 		\end{gathered}
 	\end{equation}
 
-	It is essentially the same, but with $\d t$ instead of $\frac{1}{2}\d t$. 
+	It is essentially the same, but with $\d t$ instead of $\frac{1}{2}\d t$.
 
 	\begin{itemize}
 		\item \textbf{Pros}: computationally cheaper (fewer function evaluations)
-		\item \textbf{Cons}: difficult to implement wit variable time steps, needs an even number of iterations
+		\item \textbf{Cons}: difficult to implement with variable time steps, needs an even number of iterations
 	\end{itemize}
 \end{frame}
 
@@ -412,7 +412,7 @@
 
 \begin{frame}
 	\frametitle{Implicit Methods and Choice of ODE Solver}
-	If the ODE $q_t=\psi(q)$ is \emph{stiff} (i.e. such that an extremely small time step is required to solve it with an explicit numerical method), then an \emph{implicit} method is needed. The usual choice is the \emph{trapezoidal rule}:
+	If the ODE $q_t=\psi(q)$ is \emp{stiff} (i.e. such that an extremely small time step is required to solve it with an explicit numerical method), then an \emp{implicit} method is needed. The usual choice is the \emp{trapezoidal rule}:
 
 	\begin{equation}\label{eq:trapezoidal}
 		Q_i^{n+1} = Q_i^*+\frac{\d t}{2}[\psi(Q_i^*)+\psi(Q_i^{n+1})].
@@ -439,15 +439,15 @@
 \begin{frame}
 	\frametitle{Stiff and Singular Source Terms}
 
-	If the source term is concentrated in space, it is called \emph{stiff} in analogy with the the ODEs.
+	If the source term is concentrated in space, it is called \emp{stiff} in analogy with the the ODEs.
 
-	We can say that the solution is evolving on a \emph{slow manifold} in state space and perturbing the solution causes it to produce a rapid transient response followed again by a slow evolution. A very simple example is
+	We say that the solution is evolving on a \emp{slow manifold} in state space and perturbing the solution causes it to produce a rapid response. A very simple example is
 
 	\begin{equation}\label{eq:stiff}
 		u'(t)=-\frac{u(t)}{\tau}
 	\end{equation}
 
-	where of course $u\equiv0$ is the slow manifold. For some problems the only solution is using an adaptive mesh refinement whereas in other cases using implicit methods may be enough thanks to their good stability properties.
+	where $u\equiv0$ is the slow manifold.
 \end{frame}
 
 \begin{frame}
@@ -458,13 +458,13 @@
 		U^{n+1} = \left(\frac{1-\frac{1}{2}\frac{\d t}{\tau}}{1+\frac{1}{2}\frac{\d t}{\tau}}\right)U^*.
 	\end{equation}
 
-	If we start on the slow manifold, in this case $U^*=0$, then $U^{n+1}=0$ and we remain in the slow manifold. In any other case, if $-\frac{\d t}{\tau}\rightarrow-\infty$, then $U^{n+1}=-U^*$ and this means that the coefficient in \eqref{eq:amplification} makes the solution oscillate in time rather than decay as we would expect.
+	On the slow manifold ($U^*=0$), then $U^{n+1}=0$ and we remain in the slow manifold. In any other case, if $-\frac{\d t}{\tau}\rightarrow-\infty$, then $U^{n+1}=-U^*$ and this means that the coefficient in \eqref{eq:amplification} makes the solution oscillate.
 \end{frame}
 
 \begin{frame}
 	\frametitle{Numerical Difficulties II}
 
-	This is due to the fact that the trapezoidal rule is an \emph{A-stable} method: the stability region is the left half plane, but the problem is that it passes through the point at infinity on the Riemann sphere. That's what causes the oscillatory behaviour. We need an \emph{L-stable} method, where the point at infinity is inside the stability region and so the coefficient approaches a value less than $1$ in magnitude. 
+	This is due to the fact that the trapezoidal rule is an \emp{A-stable} method: the stability region is the left half plane, but the problem requires an \emp{L-stable} method, where the stability function approaches zero as the step size goes to infinity.
 
 	\begin{figure}[!ht]
 		\centering
@@ -481,7 +481,7 @@
 \begin{frame}
 	\frametitle{Backward Differentiation Formulas}
 
-	The \emph{BDF} (Backward Differentiation Formulas) methods have this characteristic and the simplest one is the backward Euler method. In fact for \eqref{eq:stiff}
+	The \emp{BDF} (Backward Differentiation Formulas) methods have this characteristic and the simplest one is the backward Euler method. In fact for \eqref{eq:stiff}
 
 	\begin{equation}
 		U^{n+1}=U^*-\frac{\d t}{\tau}U^{n+1}\Rightarrow U^{n+1} = \left(\frac{1}{1+\frac{\d t}{\tau}}\right)U^*.
@@ -519,6 +519,17 @@
 
 		\bibitem{riemann}
 		\url{https://github.com/clawpack/riemann_book}
+
+		\bibitem{Byron}
+		B.~L.~Byron, \emph{On Pad{\'e} approximations to the exponential function and A-stable methods for the numerical solution of initial value problems.}\hskip 1em plus
+		0.5em minus 0.4em\relax Waterloo, Ontario: University of Waterloo, 1969.
+
+		\bibitem{trapezoidal}
+		\url{https://commons.wikimedia.org/wiki/File:Stability_region_for_trapezoidal_method.svg}
+
+		\bibitem{euler}
+		\url{https://commons.wikimedia.org/wiki/File:Stability_region_for_BDF1.svg}
+
 
 	\end{thebibliography}
 \end{frame}
