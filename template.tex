@@ -613,6 +613,8 @@ We can compute the exact solution of \eqref{eq:advec}, because along the charact
 	q(x,t) = e^{-\beta t}\mathring{q}(x-\bar{u}t).
 \end{equation}
 
+In Figure \ref{fig:exact}, we can see the evolution of the solution for different time steps: we notice the characteristic transport of the initial data $\mathring{q}$ at constant speed $\bar{u}$, typical of hyperbolic equations, combined with a decrease in the concentration of the substance at rate $\beta$ due to the source term.
+
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.5\textwidth]{Advection.png}
@@ -662,6 +664,8 @@ The idea is to solve the two problems in an alternating manner, using standard s
 	\text{B-step: } Q_i^{n+1} = Q_i^*-\beta\d tQ_i^*.
 \end{equation}
 
+This method is known as \textit{Godunov splitting}, also called Lie-Trotter splitting (mostly outside the Finite Volume setting).
+
 One may think that given that both $Q_i^*$ and $Q_i^{n+1}$ are calculated using $\d t$, the solution is valid for time $2\d t$, but it is not really the case: in fact if we combine the two stages and eliminate $Q_i^*$, as detailed in \cite{leveque}, we obtain
 
 \begin{equation}
@@ -669,6 +673,8 @@ One may think that given that both $Q_i^*$ and $Q_i^{n+1}$ are calculated using 
 \end{equation}
 
 The first three terms on the right hand side agree with \eqref{eq:unsplit} and the last one is $\mathcal{O}(\d t^2)$, so this method is also consistent and first-order accurate. A question that may arise is: does the accuracy improve if we use a second-order method for both \eqref{eq:probA} and \eqref{eq:probB}? In this specific case, yes, but it is not true in general because the splitting introduces a $\mathcal{O}(\d t)$ error. The reason why we don't have an error in this case is that we can really decouple the advection and the decay and do these updates in either order. This doesn't happen anymore if for example we take $\beta = 1-x$, because in this case the value depends on the position and applying the B-step before or after the A-step changes the result. We say that the two subproblems \textit{commute} if there is no splitting error.
+
+This is illustrated in Figure \ref{fig:AB}, where we compare the case $\beta=1$ and $\beta=1-x$. The error is small and one needs a very coarse approximation to show it clearly. This is the reason why the numerical solution seems so far from the analytical solution.
 
 \begin{figure*}[!ht]
 	\centering
@@ -682,7 +688,7 @@ The first three terms on the right hand side agree with \eqref{eq:unsplit} and t
 	\subfloat[]{\includegraphics[width=0.5\textwidth]{NoCommuteErr.png}%
 		\label{fig:nocommuteErr}}
 	\caption{Comparison between the exact solution of the advection-reaction equation and the split method with the two different orders of steps. The difference is hardly noticeable in the plot, but the relative error is non-zero. Note that there is a big gap between the analytical  and the numerical solution because we are using a very coarse approximation to highlight the error. The problem has $\bar{u}=1$, $\mathring{q}=\text{Gaussian}(0.25,0.003)$, $\d x = \d t = 0.02$, $t=0.6$.}
-	\label{fi:AB}
+	\label{fig:AB}
 \end{figure*}
 
 % possible TODO: show the offset split-unsplit method
@@ -805,13 +811,13 @@ We can say that the solution is evolving on a \textit{slow manifold} in state sp
 	u'(t)=-\frac{u(t)}{\tau}
 \end{equation}
 
-where of course $u\equiv0$ is the slow manifold. Solving stiff hyperbolic equations is even more difficult than solving stiff ODEs, because the fastest reactions aren't in equilibrium anywhere: for example in a detonation wave, the wave travels through space. For some problems the only solution is using an adaptive mesh refinement whereas in other cases using implicit methods may be enough thanks to their good stability properties. As we saw in Section \ref{sec:implicit}, a problem with splitting methods and stiff ODEs is that we cannot use previous time steps, so we are limited in the choice of our solver. The trapezoidal rule seems to work fine for ODEs, but fails for hyperbolic equations with stiff source terms. If we consider \eqref{eq:stiff}, the trapezoidal methods yields
+where of course $u\equiv0$ is the slow manifold. Solving stiff hyperbolic equations is even more difficult than solving stiff ODEs, because the fastest reactions are \textit{not} in equilibrium everywhere: for example in a detonation wave, the wave travels through space, so we cannot concentrate our efforts on a specific area of the domain. For some problems the only solution is using an adaptive mesh refinement whereas in other cases using implicit methods may be enough thanks to their good stability properties. As we saw in Section \ref{sec:implicit}, a problem with splitting methods and stiff ODEs is that we cannot use previous time steps, so we are limited in the choice of our solver. The trapezoidal rule seems to work fine for ODEs, but fails for hyperbolic equations with stiff source terms. If we consider \eqref{eq:stiff}, the trapezoidal methods yields
 
 \begin{equation}\label{eq:amplification}
 	U^{n+1} = \left(\frac{1-\frac{1}{2}\frac{\d t}{\tau}}{1+\frac{1}{2}\frac{\d t}{\tau}}\right)U^*.
 \end{equation}
 
-If we start on the slow manifold, in this case $U^*=0$, then $U^{n+1}=0$ and we remain in the slow manifold. In any other case, if $-\frac{\d t}{\tau}\rightarrow-\infty$, then $U^{n+1}=-U^*$ and this means that the coefficient in \eqref{eq:amplification} makes the solution oscillate in time rather than decay as we would expect. It is due to the fact that the trapezoidal rule is an \textit{A-stable} method. In fact, the stability region is the left half plane, but the problem is that it passes through the point at infinity on the Riemann sphere. That's what causes the oscillatory behaviour. We need an \textit{L-stable} method, where the point at infinity is inside the stability region and so the coefficient approaches a value less than $1$ in magnitude. The BDF (Backward Differentiation Formulas) methods have this characteristic and the simplest one is the backward Euler method. In fact for \eqref{eq:stiff}
+If we start on the slow manifold, in this case $U^*=0$, then $U^{n+1}=0$ and we remain in the slow manifold. In any other case, if $-\frac{\d t}{\tau}\rightarrow-\infty$, then $U^{n+1}=-U^*$ and this means that the coefficient in \eqref{eq:amplification} makes the solution oscillate in time rather than decay as we would expect. It is due to the fact that the trapezoidal rule is an \textit{A-stable} method. In fact, the stability region is the left half plane, but the problem is that the stability function doesn't approach zero everywhere as the step size goes to infinity \cite{Byron}. That's what causes the oscillatory behaviour. We need an \textit{L-stable} method, where the point at infinity is inside the stability region and so the coefficient approaches a value less than $1$ in magnitude. The BDF (Backward Differentiation Formulas) methods have this characteristic and the simplest one is the backward Euler method. In fact for \eqref{eq:stiff}
 
 \begin{equation}
 	U^{n+1}=U^*-\frac{\d t}{\tau}U^{n+1}\Rightarrow U^{n+1} = \left(\frac{1}{1+\frac{\d t}{\tau}}\right)U^*.
@@ -871,6 +877,19 @@ We note that this time the coefficient approaches zero for $\frac{\d t }{\tau}\r
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
 
+\begin{figure*}[!ht]
+	\centering
+	\subfloat[Trapezoidal Rule \cite{euler}]{\includegraphics[width=0.4\textwidth]{TrapezoidalStability.png}%
+		\label{fig:trapezoidal}}
+	\hfil
+	\subfloat[Implicit Euler Method \cite{trapezoidal}]{\includegraphics[width=0.4\textwidth]{EulerStability.png}%
+		\label{fig:euler}}
+	\caption{Stability region of the trapezoidal rule and implicit Euler.}
+	\label{fig:stability}
+\end{figure*}
+
+In Figure \ref{fig:stability}, we can see that in fact as the distance from the origin increases, for the implicit Euler method all the points become stable, whereas in the trapezoidal rule case the points in the right half plane will never become stable.
+
 \section* {Remarks}
 
 Most of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code used to produce the plots is original work and can be found in \cite{github}. We chose Julia to show the features of the language. Code inspired by \cite {clawpack} and \cite {riemann}.
@@ -889,6 +908,17 @@ Most of the content of this paper (and the mathematical notation) is from \cite{
 
 	\bibitem{riemann}
 	\url{https://github.com/clawpack/riemann_book}
+
+	\bibitem{Byron}
+	B.~L.~Byron, \emph{On Pad{\'e} approximations to the exponential function and A-stable methods for the numerical solution of initial value problems.}\hskip 1em plus
+	0.5em minus 0.4em\relax Waterloo, Ontario: University of Waterloo, 1969.
+
+	\bibitem{trapezoidal}
+	\url{https://commons.wikimedia.org/wiki/File:Stability_region_for_trapezoidal_method.svg}
+
+	\bibitem{euler}
+	\url{https://commons.wikimedia.org/wiki/File:Stability_region_for_BDF1.svg}
+
 
 \end{thebibliography}
 
