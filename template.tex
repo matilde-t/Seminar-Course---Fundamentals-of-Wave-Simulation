@@ -398,8 +398,6 @@
 % this is a minor point as most people would not even notice if the said evil
 % space somehow managed to creep in.
 
-
-
 % The paper headers
 %\markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
 %{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for IEEE Journals}
@@ -411,22 +409,14 @@
 % You can use \ifCLASSOPTIONpeerreview for conditional compilation here if
 % you desire.
 
-
-
-
 % If you want to put a publisher's ID mark on the page you can do it like
 % this:
 %\IEEEpubid{0000--0000/00\$00.00~\copyright~2015 IEEE}
 % Remember, if you use this you must call \IEEEpubidadjcol in the second
 % column for its text to clear the IEEEpubid mark.
 
-
-
 % use for special paper notices
 %\IEEEspecialpapernotice{(Invited Paper)}
-
-
-
 
 % make the title area
 \maketitle
@@ -441,11 +431,6 @@
 \begin{IEEEkeywords}
 	Wave Simulation, Source Terms, Seminar, hyperbolic PDEs, ODEs, Fractional Methods, Strang Splitting, Godunov Splitting.
 \end{IEEEkeywords}
-
-
-
-
-
 
 % For peer review papers, you can put extra information on the cover
 % page as needed:
@@ -489,14 +474,8 @@ is \textit{hyperbolic} and the source terms don't depend on derivatives of $q$, 
 
 is an independent system of ODEs.
 
-
-
-
 % needed in second column of first page if using \IEEEpubid
 %\IEEEpubidadjcol
-
-
-
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -767,24 +746,54 @@ Analogously to our analysis of \eqref{eq:recursion}, we can see that the result 
 
 \subsection{Accuracy}
 
-\texttt{[here there should be some plots about the difference in accuracy between Godunov \\splitting and Strang splitting but my Julia skills are poor and I still haven't figured out why my plots don't work as expected]}
+We tried to replicate some results from \cite{leveque}, but as the author says, for this specific problem the Godunov splitting is essentially as accurate as the Strang splitting. We decided to try with a completely different type of problem, namely the \textit{logistic equation} in the form
 
+\begin{equation}
+	u' = u-u^2\quad,\qquad u(0)=0.1
+\end{equation}
 
+with solution $u(t)=(9e^{-t}+1)^{-1}$ \cite{logistic}. Both subproblems, $u'=u$ and $u'=-u^{2}$, have been discretised with a forward Euler step.
 
+The results show a similar behaviour. The two operators do not commute and in fact we see in Figure \ref{fig:err} and \ref{fig:AccuracyLogistic} that Godunov usually overestimates or underestimates compared to Strang. In this case, one of the two Godunov versions behaves better, probably because of the difference in magnitude between $u$ and $u^2$.
 
+\begin{figure*}[!ht]
+	\centering
+	\subfloat[]{\includegraphics[width=0.5\textwidth]{Accuracy_advection_1e-1.0.png}%
+		\label{fig:1}}
+	\subfloat[]{\includegraphics[width=0.5\textwidth]{Accuracy_advection_1e-1.4.png}%
+		\label{fig:1.4}}
 
+	\subfloat[]{\includegraphics[width=0.5\textwidth]{Accuracy_advection_1e-1.8.png}%
+		\label{fig:1.8}}
+	\subfloat[]{\includegraphics[width=0.5\textwidth]{Accuracy_advection_1e-2.2.png}%
+		\label{fig:2.2}}
+	\caption{Comparison of different discretisations. The problem has $\bar{u}=1$, $\mathring{q}=\text{Gaussian}(0.25,0.003)$, $\d x = \d t = 0.02$, $t=0.6$.}
+	\label{fig:AccuracyAdvection}
+\end{figure*}
 
+\begin{figure*}[!ht]
+	\centering
+	\subfloat[]{\includegraphics[width=0.4\textwidth]{ErrorAdvection.png}%
+		\label{fig:errAdv}}
+	\hfil
+	\subfloat[]{\includegraphics[width=0.4\textwidth]{ErrorLogistic.png}%
+		\label{fig:errLog}}
+	\caption{Log-log plot of max-norm errors.}
+	\label{fig:err}
+\end{figure*}
 
+\begin{figure*}[!ht]
+	\centering
+	\subfloat[]{\includegraphics[width=0.5\textwidth]{Accuracy_logistic_1.0.png}%
+		\label{fig:1.0}}
 
-
-
-
-
-
-
-
-
-
+	\subfloat[]{\includegraphics[width=0.5\textwidth]{Accuracy_logistic_0.1.png}%
+		\label{fig:0.1}}
+	\subfloat[]{\includegraphics[width=0.5\textwidth]{Accuracy_logistic_0.01.png}%
+		\label{fig0.01}}
+	\caption{Comparison of the exact solution of the logistic equation, the Godunov split method with the two different orders of steps, and the Strang method.}
+	\label{fig:AccuracyLogistic}
+\end{figure*}
 
 
 \section{Implicit methods and choice of ODE solver}\label{sec:implicit}
@@ -879,10 +888,10 @@ We note that this time the coefficient approaches zero for $\frac{\d t }{\tau}\r
 
 \begin{figure*}[!ht]
 	\centering
-	\subfloat[Trapezoidal Rule \cite{euler}]{\includegraphics[width=0.4\textwidth]{TrapezoidalStability.png}%
+	\subfloat[Trapezoidal Rule \cite{trapezoidal}]{\includegraphics[width=0.4\textwidth]{TrapezoidalStability.png}%
 		\label{fig:trapezoidal}}
 	\hfil
-	\subfloat[Implicit Euler Method \cite{trapezoidal}]{\includegraphics[width=0.4\textwidth]{EulerStability.png}%
+	\subfloat[Implicit Euler Method \cite{euler}]{\includegraphics[width=0.4\textwidth]{EulerStability.png}%
 		\label{fig:euler}}
 	\caption{Stability region of the trapezoidal rule and implicit Euler.}
 	\label{fig:stability}
@@ -892,7 +901,7 @@ In Figure \ref{fig:stability}, we can see that in fact as the distance from the 
 
 \section* {Remarks}
 
-Most of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code used to produce the plots is original work and can be found in \cite{github}. We chose Julia to show the features of the language. Code inspired by \cite {clawpack} and \cite {riemann}.
+Most of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code used to produce the plots is original work (unless differently credited) and can be found in \cite{github}. We chose Julia to show the features of the language. Code inspired by \cite {clawpack} and \cite {riemann}.
 
 \begin{thebibliography}{1}
 
@@ -918,6 +927,9 @@ Most of the content of this paper (and the mathematical notation) is from \cite{
 
 	\bibitem{euler}
 	\url{https://commons.wikimedia.org/wiki/File:Stability_region_for_BDF1.svg}
+
+	\bibitem{logistic}
+	\url{https://hplgit.github.io/fdm-book/doc/pub/book/sphinx/._book018.html}
 
 
 \end{thebibliography}
