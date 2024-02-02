@@ -42,7 +42,7 @@ for dt in [1e-2 1e-1 1]
     errAB = norm(Qref .- QAB, Inf)
 
     plot(t_, Qref, label="Exact")
-    scatter!(t_, QAB, label="Godunov AB")
+    scatter!(t_, QAB, label="Godunov AB", markerstrokewidth=.1)
 
     Q0 = q0
 
@@ -59,7 +59,7 @@ for dt in [1e-2 1e-1 1]
 
     errBA = norm(Qref .- QBA, Inf)
 
-    scatter!(t_, QBA, label="Godunov BA")
+    scatter!(t_, QBA, label="Godunov BA", markerstrokewidth=.1)
 
     Q0 = q0
 
@@ -77,7 +77,7 @@ for dt in [1e-2 1e-1 1]
 
     errS = norm(Qref .- QS, Inf)
 
-    scatter!(t_, QS, label="Strang")
+    scatter!(t_, QS, label="Strang", markerstrokewidth=.1)
     xlabel!("t")
     ylabel!("u(t)")
     title!("δt = " * string(dt))

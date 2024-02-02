@@ -1,6 +1,7 @@
 \newcommand{\ca}{\mathcal{A}}
 \newcommand{\cb}{\mathcal{B}}
 \renewcommand{\d}{\Delta}
+
 %% bare_jrnl.tex
 %% V1.4b
 %% 2015/08/26
@@ -746,7 +747,7 @@ Analogously to our analysis of \eqref{eq:recursion}, we can see that the result 
 
 \subsection{Accuracy}
 
-We tried to replicate some results from \cite{leveque}, but as the author says, for this specific problem the Godunov splitting is essentially as accurate as the Strang splitting. We decided to try with a completely different type of problem, namely the \textit{logistic equation} in the form
+We replicated some results from \cite{leveque} and confirmed that for this specific problem "the Godunov splitting is essentially as accurate as the Strang splitting". We decided to try with a completely different type of problem, namely the \textit{logistic equation} in the form
 
 \begin{equation}
 	u' = u-u^2\quad,\qquad u(0)=0.1
@@ -795,6 +796,7 @@ The results show a similar behaviour. The two operators do not commute and in fa
 	\label{fig:AccuracyLogistic}
 \end{figure*}
 
+\vspace*{2cm}
 
 \section{Implicit methods and choice of ODE solver}\label{sec:implicit}
 
@@ -901,7 +903,7 @@ In Figure \ref{fig:stability}, we can see that in fact as the distance from the 
 
 \section* {Remarks}
 
-Most of the content of this paper (and the mathematical notation) is from \cite{leveque}. The code used to produce the plots is original work (unless differently credited) and can be found in \cite{github}. We chose Julia to show the features of the language. Code inspired by \cite {clawpack} and \cite {riemann}.
+The code used to produce the plots is original work (unless differently credited) and can be found in \cite{github}. We chose Julia to show the features of the language. Code inspired by \cite {clawpack} and \cite {riemann}.
 
 \begin{thebibliography}{1}
 
